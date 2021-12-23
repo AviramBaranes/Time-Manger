@@ -4,41 +4,77 @@ const modals = document.querySelectorAll(
 ) as NodeListOf<HTMLDivElement>;
 const formModal = modals[0];
 const deleteModal = modals[1];
+const taskFinishedModal = modals[2];
+const summarizeModal = modals[3];
 const approveBtn = deleteModal.children[1].children[0];
 const cancelBtn = deleteModal.children[1].children[1];
+const summarizeBtn = document.getElementById('summarize') as HTMLButtonElement;
 const form = formModal.children[0] as HTMLFormElement;
 const taskNameInput = form.children[1].children[0] as HTMLInputElement;
 const taskTimeInput = form.children[2].children[0] as HTMLInputElement;
 const errorParagraph = document.getElementById('error') as HTMLParagraphElement;
 const tasksList = document.querySelector('.tasks-lists') as HTMLUListElement;
-const taskListItemTemplate = document.getElementsByTagName(
-  'template'
-)[0] as HTMLTemplateElement;
+const tasksSummarizeList = document.querySelector(
+  '.tasks-summarize'
+) as HTMLUListElement;
 
+window.addEventListener('storage', () => {
+  if (localStorage.length) summarizeBtn.style.display = 'block';
+  else summarizeBtn.style.display = 'none';
+});
 addTaskBtn.addEventListener('click', addTaskHandler);
 form.addEventListener('submit', submitFormHandler);
+summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
 
 function addTaskHandler() {
   formModal.style.display = 'block';
 }
 
 function createListItem(taskName: string) {
-  const liEl = document.createElement('li');
-  const h4El = document.createElement('h4');
-  const pEl = document.createElement('p');
+  const liElement = document.createElement('li');
+  const h4Element = document.createElement('h4');
+  const pElement = document.createElement('p');
   const playBtn = document.createElement('button');
   const deleteBtn = document.createElement('button');
-  h4El.innerText = taskName;
-  pEl.innerText = '00:00:00:00';
+  h4Element.innerText = taskName;
+  pElement.innerText = '00:00:00:00';
   playBtn.innerText = 'start';
   deleteBtn.innerText = 'delete';
   playBtn.addEventListener('click', playBtnClickedHandler);
   deleteBtn.addEventListener('click', deleteBtnClickedHandler);
-  liEl.appendChild(h4El);
-  liEl.appendChild(pEl);
-  liEl.appendChild(playBtn);
-  liEl.appendChild(deleteBtn);
-  return liEl;
+  liElement.appendChild(h4Element);
+  liElement.appendChild(pElement);
+  liElement.appendChild(playBtn);
+  liElement.appendChild(deleteBtn);
+  return liElement;
+}
+
+function createSummarizeListItem(
+  taskName: string,
+  taskProgress: string,
+  taskGoal: string
+) {
+  const liElement = document.createElement('li');
+  const h4Element = document.createElement('h4');
+  const pElement = document.createElement('p');
+  h4Element.innerText = `${taskName}:`;
+  pElement.innerText = `${taskProgress}/${taskGoal}`;
+  liElement.appendChild(h4Element);
+  liElement.appendChild(pElement);
+  return liElement;
+}
+
+function summarizeBtnClickedHandler() {
+  for (let i = 0; i < localStorage.length; i++) {
+    const taskData = JSON.parse(localStorage.getItem(localStorage.key(i)!)!);
+    const modifiedTaskProgress = taskData.progressTime.substring(0, 5);
+    const newListItem = createSummarizeListItem(
+      localStorage.key(i)!,
+      modifiedTaskProgress,
+      taskData.goalTime
+    );
+    tasksSummarizeList.appendChild(newListItem);
+  }
 }
 
 function deleteBtnClickedHandler(this: HTMLButtonElement) {
@@ -87,15 +123,27 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
       }
       const taskName = (currentListItem.children[0] as HTMLHeadingElement)
         .innerText;
-      const progressTime = newTime.join(':');
       const { goalTime } = JSON.parse(localStorage.getItem(taskName)!);
+      const [hoursGoal, minutesGoal] = goalTime.split(':');
+      if (hoursGoal === newTime[0] && minutesGoal === newTime[1]) {
+        (
+          taskFinishedModal.children[1] as HTMLParagraphElement
+        ).innerText = `You finished the task: ${taskName}`;
+        taskFinishedModal.style.display = 'block';
+        taskFinishedModal.children[2].addEventListener('click', () => {
+          clearInterval(interval);
+          taskFinishedModal.style.display = 'none';
+          (taskFinishedModal.children[1] as HTMLParagraphElement).innerText =
+            '';
+        });
+      }
+      const progressTime = newTime.join(':');
       (currentListItem.children[1] as HTMLParagraphElement).innerText =
         progressTime;
       const updatedTaskData = JSON.stringify({ goalTime, progressTime });
       localStorage.setItem(taskName, updatedTaskData);
       currentListItem.setAttribute('data-interval', interval.toString());
     }, 10);
-    console.log(interval);
   } else {
     this.innerText = 'start';
     clearInterval(+currentListItem.getAttribute('data-interval')!);
