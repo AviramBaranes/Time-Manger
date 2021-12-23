@@ -1,0 +1,15 @@
+1. handle duplicate tasks
+
+2. add time goal achieved + summarize
+
+3. add on page reload load the local storage data.
+
+4. add reset btn.
+
+5. add icons
+
+6. add styles
+
+7. add animations
+
+8. add footer
