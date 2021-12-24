@@ -16,6 +16,7 @@ var errorParagraph = document.getElementById('error');
 var tasksList = document.querySelector('.tasks-lists');
 var tasksSummarizeList = document.querySelector('.tasks-summarize');
 var storageEvent = new CustomEvent('storageChanged');
+var ZERO_TIME = '00:00:00:00';
 (function () {
     for (var i = 0; i < localStorage.length; i++) {
         var taskName = localStorage.key(i);
@@ -131,6 +132,19 @@ function playBtnClickedHandler() {
         clearInterval(+currentListItem.getAttribute('data-interval'));
     }
 }
+function resetBtnClickedHandler() {
+    var listItem = this.parentElement;
+    var taskName = listItem.children[0].innerText;
+    listItem.children[1].innerText = ZERO_TIME;
+    listItem.children[2].innerText = 'start';
+    var goalTime = JSON.parse(localStorage.getItem(taskName)).goalTime;
+    var updatedTaskData = JSON.stringify({
+        goalTime: goalTime,
+        progressTime: ZERO_TIME,
+    });
+    localStorage.setItem(taskName, updatedTaskData);
+    clearInterval(+listItem.getAttribute('data-interval'));
+}
 function submitFormHandler(e) {
     e.preventDefault();
     var taskName = taskNameInput.value;
@@ -141,7 +155,7 @@ function submitFormHandler(e) {
     }
     var taskData = JSON.stringify({
         goalTime: taskTime,
-        progressTime: '00:00:00:00',
+        progressTime: ZERO_TIME,
     });
     localStorage.setItem(taskName, taskData);
     window.dispatchEvent(storageEvent);
@@ -158,16 +172,20 @@ function createListItem(taskName, progressTime) {
     var pElement = document.createElement('p');
     var playBtn = document.createElement('button');
     var deleteBtn = document.createElement('button');
+    var resetBtn = document.createElement('button');
     h4Element.innerText = taskName;
-    pElement.innerText = progressTime || '00:00:00:00';
+    pElement.innerText = progressTime || ZERO_TIME;
     playBtn.innerText = 'start';
     deleteBtn.innerText = 'delete';
+    resetBtn.innerText = 'reset';
     playBtn.addEventListener('click', playBtnClickedHandler);
     deleteBtn.addEventListener('click', deleteBtnClickedHandler);
+    resetBtn.addEventListener('click', resetBtnClickedHandler);
     liElement.appendChild(h4Element);
     liElement.appendChild(pElement);
     liElement.appendChild(playBtn);
     liElement.appendChild(deleteBtn);
+    liElement.appendChild(resetBtn);
     return liElement;
 }
 function createSummarizeListItem(taskName, taskProgress, taskGoal) {

@@ -1,17 +1,15 @@
 1. handle duplicate tasks
 
-2. add reset btn.
+2. add modal for more information and changing the progress time
 
-3. add modal for more information and changing the progress time
+3. add sound notification
 
-4. add sound notification
+4. add icons
 
-5. add icons
+5. add styles
 
-6. add styles
+6. add animations
 
-7. add animations
+7. add footer
 
-8. add footer
-
-9. deploy
+8. deploy

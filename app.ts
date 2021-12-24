@@ -20,6 +20,7 @@ const tasksSummarizeList = document.querySelector(
 ) as HTMLUListElement;
 
 const storageEvent = new CustomEvent('storageChanged');
+const ZERO_TIME = '00:00:00:00';
 
 (function () {
   for (let i = 0; i < localStorage.length; i++) {
@@ -147,6 +148,20 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
   }
 }
 
+function resetBtnClickedHandler(this: HTMLButtonElement) {
+  const listItem = this.parentElement!;
+  const taskName = (listItem.children[0] as HTMLButtonElement).innerText;
+  (listItem.children[1] as HTMLHeadingElement).innerText = ZERO_TIME;
+  (listItem.children[2] as HTMLButtonElement).innerText = 'start';
+  const { goalTime } = JSON.parse(localStorage.getItem(taskName)!);
+  const updatedTaskData = JSON.stringify({
+    goalTime,
+    progressTime: ZERO_TIME,
+  });
+  localStorage.setItem(taskName, updatedTaskData);
+  clearInterval(+listItem.getAttribute('data-interval')!);
+}
+
 function submitFormHandler(e: Event) {
   e.preventDefault();
 
@@ -160,7 +175,7 @@ function submitFormHandler(e: Event) {
 
   const taskData = JSON.stringify({
     goalTime: taskTime,
-    progressTime: '00:00:00:00',
+    progressTime: ZERO_TIME,
   });
 
   localStorage.setItem(taskName, taskData);
@@ -180,16 +195,20 @@ function createListItem(taskName: string, progressTime?: string) {
   const pElement = document.createElement('p');
   const playBtn = document.createElement('button');
   const deleteBtn = document.createElement('button');
+  const resetBtn = document.createElement('button');
   h4Element.innerText = taskName;
-  pElement.innerText = progressTime || '00:00:00:00';
+  pElement.innerText = progressTime || ZERO_TIME;
   playBtn.innerText = 'start';
   deleteBtn.innerText = 'delete';
+  resetBtn.innerText = 'reset';
   playBtn.addEventListener('click', playBtnClickedHandler);
   deleteBtn.addEventListener('click', deleteBtnClickedHandler);
+  resetBtn.addEventListener('click', resetBtnClickedHandler);
   liElement.appendChild(h4Element);
   liElement.appendChild(pElement);
   liElement.appendChild(playBtn);
   liElement.appendChild(deleteBtn);
+  liElement.appendChild(resetBtn);
   return liElement;
 }
 
