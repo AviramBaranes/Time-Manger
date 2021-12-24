@@ -17,7 +17,7 @@ var taskTimeInput = form.children[2].children[0];
 var taskDescriptionInput = form.children[3]
     .children[0];
 var errorParagraph = document.getElementById('error');
-var tasksList = document.querySelector('.tasks-lists');
+var tasksList = document.querySelector('.tasks-list');
 var tasksSummarizeList = document.querySelector('.tasks-summarize');
 var audio = new Audio('./assets/taskCompletedSound.ogg');
 var storageEvent = new CustomEvent('storageChanged');
@@ -91,17 +91,17 @@ function deleteBtnClickedHandler() {
     });
 }
 function playBtnClickedHandler() {
-    var currentListItem = this.parentElement;
+    var currentListItem = this.parentElement.parentElement;
     if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
         this.innerHTML = '<i class="fas fa-pause"></i>';
         var interval_1 = setInterval(function () {
-            if (currentListItem.children[1].innerText !==
-                ZERO_TIME) {
-                currentListItem.children[4].style.display =
-                    'inline';
+            var paragraphElement = currentListItem.children[0].children[1];
+            var resetBtn = currentListItem.children[1]
+                .children[2];
+            var currentTime = paragraphElement.innerHTML;
+            if (currentTime !== ZERO_TIME) {
+                resetBtn.style.display = 'inline';
             }
-            var currentTime = currentListItem.children[1]
-                .innerText;
             var _a = currentTime.split(':'), hours = _a[0], minutes = _a[1], seconds = _a[2], centiseconds = _a[3];
             var newTime = [];
             if (centiseconds === '99') {
@@ -124,13 +124,12 @@ function playBtnClickedHandler() {
                 var newCentiseconds = String(parseInt(centiseconds) + 1).padStart(2, '0');
                 newTime = [hours, minutes, seconds, newCentiseconds];
             }
-            var taskName = currentListItem.children[0]
-                .innerText;
+            var taskName = currentListItem.children[0].children[0].innerHTML;
             var _b = JSON.parse(localStorage.getItem(taskName)), goalTime = _b.goalTime, description = _b.description;
             var _c = goalTime.split(':'), hoursGoal = _c[0], minutesGoal = _c[1];
             if (hoursGoal === newTime[0] && minutesGoal === newTime[1]) {
                 audio.play();
-                taskFinishedModal.children[1].innerText = "You finished the task: " + taskName;
+                taskFinishedModal.children[1].innerHTML = "You finished the task: " + taskName;
                 taskFinishedModal.style.display = 'block';
                 taskFinishedModal.children[2].addEventListener('click', function () {
                     clearInterval(interval_1);
@@ -140,8 +139,7 @@ function playBtnClickedHandler() {
                 });
             }
             var progressTime = newTime.join(':');
-            currentListItem.children[1].innerText =
-                progressTime;
+            paragraphElement.innerHTML = progressTime;
             var taskDataObj = { goalTime: goalTime, progressTime: progressTime };
             if (description)
                 taskDataObj.description = description;
@@ -157,10 +155,10 @@ function playBtnClickedHandler() {
     }
 }
 function resetBtnClickedHandler() {
-    var listItem = this.parentElement;
-    var taskName = listItem.children[0].innerText;
-    listItem.children[1].innerText = ZERO_TIME;
-    listItem.children[2].innerHTML = '<i class="fas fa-play"></i>';
+    var listItem = this.parentElement.parentElement;
+    var taskName = listItem.children[0].children[0].innerHTML;
+    listItem.children[0].children[1].innerHTML = ZERO_TIME;
+    listItem.children[1].children[0].innerHTML = '<i class="fas fa-play"></i>';
     var _a = JSON.parse(localStorage.getItem(taskName)), goalTime = _a.goalTime, description = _a.description;
     var taskDataObj = {
         goalTime: goalTime,
@@ -210,6 +208,10 @@ function createListItem(taskName, progressTime) {
     var playBtn = document.createElement('button');
     var deleteBtn = document.createElement('button');
     var resetBtn = document.createElement('button');
+    var textContainer = document.createElement('div');
+    var buttonsContainer = document.createElement('div');
+    textContainer.className = 'text-container';
+    buttonsContainer.className = 'buttons-container';
     h4Element.innerText = taskName;
     pElement.innerText = progressTime || ZERO_TIME;
     playBtn.innerHTML = '<i class="fas fa-play"></i>';
@@ -220,11 +222,13 @@ function createListItem(taskName, progressTime) {
     playBtn.addEventListener('click', playBtnClickedHandler);
     deleteBtn.addEventListener('click', deleteBtnClickedHandler);
     resetBtn.addEventListener('click', resetBtnClickedHandler);
-    liElement.appendChild(h4Element);
-    liElement.appendChild(pElement);
-    liElement.appendChild(playBtn);
-    liElement.appendChild(deleteBtn);
-    liElement.appendChild(resetBtn);
+    textContainer.appendChild(h4Element);
+    textContainer.appendChild(pElement);
+    buttonsContainer.appendChild(playBtn);
+    buttonsContainer.appendChild(deleteBtn);
+    buttonsContainer.appendChild(resetBtn);
+    liElement.appendChild(textContainer);
+    liElement.appendChild(buttonsContainer);
     liElement.addEventListener('click', function (e) {
         if (e.target.tagName === 'BUTTON')
             return;
