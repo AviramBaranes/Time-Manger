@@ -1,10 +1,10 @@
 1. handle duplicate tasks
 
-2. add on page reload load the local storage data.
+2. add reset btn.
 
-3. add reset btn.
+3. add modal for more information and changing the progress time
 
-4. add modal for more information and changing the progress time
+4. add sound notification
 
 5. add icons
 

@@ -21,12 +21,20 @@ const tasksSummarizeList = document.querySelector(
 
 const storageEvent = new CustomEvent('storageChanged');
 
-window.addEventListener('storageChanged', storageChangedHandler);
-window.addEventListener('storage', storageChangedHandler);
-addTaskBtn.addEventListener('click', addTaskHandler);
-form.addEventListener('submit', submitFormHandler);
-summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
-closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
+(function () {
+  for (let i = 0; i < localStorage.length; i++) {
+    const taskName = localStorage.key(i)!;
+    const { progressTime } = JSON.parse(localStorage.getItem(taskName)!);
+    const listItem = createListItem(localStorage.key(i)!, progressTime);
+    tasksList.appendChild(listItem);
+  }
+  window.addEventListener('storageChanged', storageChangedHandler);
+  window.addEventListener('storage', storageChangedHandler);
+  addTaskBtn.addEventListener('click', addTaskHandler);
+  form.addEventListener('submit', submitFormHandler);
+  summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
+  closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
+})();
 
 //eventListeners
 
@@ -166,14 +174,14 @@ function submitFormHandler(e: Event) {
 
 //create DOM elements
 
-function createListItem(taskName: string) {
+function createListItem(taskName: string, progressTime?: string) {
   const liElement = document.createElement('li');
   const h4Element = document.createElement('h4');
   const pElement = document.createElement('p');
   const playBtn = document.createElement('button');
   const deleteBtn = document.createElement('button');
   h4Element.innerText = taskName;
-  pElement.innerText = '00:00:00:00';
+  pElement.innerText = progressTime || '00:00:00:00';
   playBtn.innerText = 'start';
   deleteBtn.innerText = 'delete';
   playBtn.addEventListener('click', playBtnClickedHandler);

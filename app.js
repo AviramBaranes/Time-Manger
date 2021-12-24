@@ -16,12 +16,20 @@ var errorParagraph = document.getElementById('error');
 var tasksList = document.querySelector('.tasks-lists');
 var tasksSummarizeList = document.querySelector('.tasks-summarize');
 var storageEvent = new CustomEvent('storageChanged');
-window.addEventListener('storageChanged', storageChangedHandler);
-window.addEventListener('storage', storageChangedHandler);
-addTaskBtn.addEventListener('click', addTaskHandler);
-form.addEventListener('submit', submitFormHandler);
-summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
-closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
+(function () {
+    for (var i = 0; i < localStorage.length; i++) {
+        var taskName = localStorage.key(i);
+        var progressTime = JSON.parse(localStorage.getItem(taskName)).progressTime;
+        var listItem = createListItem(localStorage.key(i), progressTime);
+        tasksList.appendChild(listItem);
+    }
+    window.addEventListener('storageChanged', storageChangedHandler);
+    window.addEventListener('storage', storageChangedHandler);
+    addTaskBtn.addEventListener('click', addTaskHandler);
+    form.addEventListener('submit', submitFormHandler);
+    summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
+    closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
+})();
 //eventListeners
 function addTaskHandler() {
     formModal.style.display = 'block';
@@ -144,14 +152,14 @@ function submitFormHandler(e) {
     formModal.style.display = 'none';
 }
 //create DOM elements
-function createListItem(taskName) {
+function createListItem(taskName, progressTime) {
     var liElement = document.createElement('li');
     var h4Element = document.createElement('h4');
     var pElement = document.createElement('p');
     var playBtn = document.createElement('button');
     var deleteBtn = document.createElement('button');
     h4Element.innerText = taskName;
-    pElement.innerText = '00:00:00:00';
+    pElement.innerText = progressTime || '00:00:00:00';
     playBtn.innerText = 'start';
     deleteBtn.innerText = 'delete';
     playBtn.addEventListener('click', playBtnClickedHandler);
