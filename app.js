@@ -92,8 +92,8 @@ function deleteBtnClickedHandler() {
 }
 function playBtnClickedHandler() {
     var currentListItem = this.parentElement;
-    if (this.innerText === 'start') {
-        this.innerText = 'stop';
+    if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
+        this.innerHTML = '<i class="fas fa-pause"></i>';
         var interval_1 = setInterval(function () {
             if (currentListItem.children[1].innerText !==
                 ZERO_TIME) {
@@ -152,7 +152,7 @@ function playBtnClickedHandler() {
         }, 1);
     }
     else {
-        this.innerText = 'start';
+        this.innerHTML = '<i class="fas fa-play"></i>';
         clearInterval(+currentListItem.getAttribute('data-interval'));
     }
 }
@@ -160,7 +160,7 @@ function resetBtnClickedHandler() {
     var listItem = this.parentElement;
     var taskName = listItem.children[0].innerText;
     listItem.children[1].innerText = ZERO_TIME;
-    listItem.children[2].innerText = 'start';
+    listItem.children[2].innerHTML = '<i class="fas fa-play"></i>';
     var _a = JSON.parse(localStorage.getItem(taskName)), goalTime = _a.goalTime, description = _a.description;
     var taskDataObj = {
         goalTime: goalTime,
@@ -212,9 +212,9 @@ function createListItem(taskName, progressTime) {
     var resetBtn = document.createElement('button');
     h4Element.innerText = taskName;
     pElement.innerText = progressTime || ZERO_TIME;
-    playBtn.innerText = 'start';
-    deleteBtn.innerText = 'delete';
-    resetBtn.innerText = 'reset';
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    resetBtn.innerHTML = '<i class="fas fa-redo-alt"></i>';
     if (!progressTime || progressTime === ZERO_TIME)
         resetBtn.style.display = 'none';
     playBtn.addEventListener('click', playBtnClickedHandler);

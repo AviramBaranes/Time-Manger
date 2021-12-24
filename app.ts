@@ -118,8 +118,8 @@ function deleteBtnClickedHandler(this: HTMLButtonElement) {
 
 function playBtnClickedHandler(this: HTMLButtonElement) {
   const currentListItem = this.parentElement!;
-  if (this.innerText === 'start') {
-    this.innerText = 'stop';
+  if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
+    this.innerHTML = '<i class="fas fa-pause"></i>';
     const interval = setInterval(() => {
       if (
         (currentListItem.children[1] as HTMLParagraphElement).innerText !==
@@ -184,7 +184,7 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
       currentListItem.setAttribute('data-interval', interval.toString());
     }, 1);
   } else {
-    this.innerText = 'start';
+    this.innerHTML = '<i class="fas fa-play"></i>';
     clearInterval(+currentListItem.getAttribute('data-interval')!);
   }
 }
@@ -193,7 +193,7 @@ function resetBtnClickedHandler(this: HTMLButtonElement) {
   const listItem = this.parentElement!;
   const taskName = (listItem.children[0] as HTMLButtonElement).innerText;
   (listItem.children[1] as HTMLHeadingElement).innerText = ZERO_TIME;
-  (listItem.children[2] as HTMLButtonElement).innerText = 'start';
+  listItem.children[2].innerHTML = '<i class="fas fa-play"></i>';
   const { goalTime, description } = JSON.parse(
     localStorage.getItem(taskName)!
   ) as TaskDataType;
@@ -258,9 +258,9 @@ function createListItem(taskName: string, progressTime?: string) {
   const resetBtn = document.createElement('button');
   h4Element.innerText = taskName;
   pElement.innerText = progressTime || ZERO_TIME;
-  playBtn.innerText = 'start';
-  deleteBtn.innerText = 'delete';
-  resetBtn.innerText = 'reset';
+  playBtn.innerHTML = '<i class="fas fa-play"></i>';
+  deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+  resetBtn.innerHTML = '<i class="fas fa-redo-alt"></i>';
   if (!progressTime || progressTime === ZERO_TIME)
     resetBtn.style.display = 'none';
   playBtn.addEventListener('click', playBtnClickedHandler);
