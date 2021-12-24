@@ -1,3 +1,8 @@
+interface TaskDataType {
+  goalTime: string;
+  progressTime: string;
+  description?: string;
+}
 const addTaskBtn = document.getElementById('addBtn') as HTMLButtonElement;
 const modals = document.querySelectorAll(
   '.modal'
@@ -6,6 +11,8 @@ const formModal = modals[0];
 const deleteModal = modals[1];
 const taskFinishedModal = modals[2];
 const summarizeModal = modals[3];
+const detailModal = modals[4];
+const closeDetailModalBtn = detailModal.children[3] as HTMLButtonElement;
 const approveBtn = deleteModal.children[1].children[0];
 const cancelBtn = deleteModal.children[1].children[1];
 const summarizeBtn = document.getElementById('summarize') as HTMLButtonElement;
@@ -13,19 +20,24 @@ const closeSummarizeBtn = summarizeModal.children[2];
 const form = formModal.children[0] as HTMLFormElement;
 const taskNameInput = form.children[1].children[0] as HTMLInputElement;
 const taskTimeInput = form.children[2].children[0] as HTMLInputElement;
+const taskDescriptionInput = form.children[3]
+  .children[0] as HTMLTextAreaElement;
 const errorParagraph = document.getElementById('error') as HTMLParagraphElement;
 const tasksList = document.querySelector('.tasks-lists') as HTMLUListElement;
 const tasksSummarizeList = document.querySelector(
   '.tasks-summarize'
 ) as HTMLUListElement;
 
+const audio = new Audio('./assets/taskCompletedSound.ogg');
 const storageEvent = new CustomEvent('storageChanged');
 const ZERO_TIME = '00:00:00:00';
 
 (function () {
   for (let i = 0; i < localStorage.length; i++) {
     const taskName = localStorage.key(i)!;
-    const { progressTime } = JSON.parse(localStorage.getItem(taskName)!);
+    const { progressTime } = JSON.parse(
+      localStorage.getItem(taskName)!
+    ) as TaskDataType;
     const listItem = createListItem(localStorage.key(i)!, progressTime);
     tasksList.appendChild(listItem);
   }
@@ -35,12 +47,20 @@ const ZERO_TIME = '00:00:00:00';
   form.addEventListener('submit', submitFormHandler);
   summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
   closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
+  closeDetailModalBtn.addEventListener(
+    'click',
+    closeDetailModalBtnClickedHandler
+  );
 })();
 
 //eventListeners
 
 function addTaskHandler() {
   formModal.style.display = 'block';
+}
+
+function closeDetailModalBtnClickedHandler() {
+  detailModal.style.display = 'none';
 }
 
 function closeSummarizeBtnClickedHandler() {
@@ -51,7 +71,14 @@ function closeSummarizeBtnClickedHandler() {
 }
 
 function storageChangedHandler() {
-  if (localStorage.length) summarizeBtn.style.display = 'block';
+  let isProgressTime = false;
+  for (let i = 0; i < localStorage.length; i++) {
+    const { progressTime } = JSON.parse(
+      localStorage.getItem(localStorage.key(i)!)!
+    );
+    if (progressTime !== ZERO_TIME) isProgressTime = true;
+  }
+  if (isProgressTime) summarizeBtn.style.display = 'block';
   else summarizeBtn.style.display = 'none';
 }
 
@@ -94,6 +121,13 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
   if (this.innerText === 'start') {
     this.innerText = 'stop';
     const interval = setInterval(() => {
+      if (
+        (currentListItem.children[1] as HTMLParagraphElement).innerText !==
+        ZERO_TIME
+      ) {
+        (currentListItem.children[4] as HTMLButtonElement).style.display =
+          'inline';
+      }
       const currentTime = (currentListItem.children[1] as HTMLParagraphElement)
         .innerText;
       const [hours, minutes, seconds, centiseconds] = currentTime.split(':');
@@ -120,9 +154,12 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
       }
       const taskName = (currentListItem.children[0] as HTMLHeadingElement)
         .innerText;
-      const { goalTime } = JSON.parse(localStorage.getItem(taskName)!);
+      const { goalTime, description } = JSON.parse(
+        localStorage.getItem(taskName)!
+      ) as TaskDataType;
       const [hoursGoal, minutesGoal] = goalTime.split(':');
       if (hoursGoal === newTime[0] && minutesGoal === newTime[1]) {
+        audio.play();
         (
           taskFinishedModal.children[1] as HTMLParagraphElement
         ).innerText = `You finished the task: ${taskName}`;
@@ -137,11 +174,15 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
       const progressTime = newTime.join(':');
       (currentListItem.children[1] as HTMLParagraphElement).innerText =
         progressTime;
-      const updatedTaskData = JSON.stringify({ goalTime, progressTime });
+      const taskDataObj: TaskDataType = { goalTime, progressTime };
+
+      if (description) taskDataObj.description = description;
+
+      const updatedTaskData = JSON.stringify(taskDataObj);
       localStorage.setItem(taskName, updatedTaskData);
       window.dispatchEvent(storageEvent);
       currentListItem.setAttribute('data-interval', interval.toString());
-    }, 10);
+    }, 1);
   } else {
     this.innerText = 'start';
     clearInterval(+currentListItem.getAttribute('data-interval')!);
@@ -153,13 +194,22 @@ function resetBtnClickedHandler(this: HTMLButtonElement) {
   const taskName = (listItem.children[0] as HTMLButtonElement).innerText;
   (listItem.children[1] as HTMLHeadingElement).innerText = ZERO_TIME;
   (listItem.children[2] as HTMLButtonElement).innerText = 'start';
-  const { goalTime } = JSON.parse(localStorage.getItem(taskName)!);
-  const updatedTaskData = JSON.stringify({
+  const { goalTime, description } = JSON.parse(
+    localStorage.getItem(taskName)!
+  ) as TaskDataType;
+
+  const taskDataObj: TaskDataType = {
     goalTime,
     progressTime: ZERO_TIME,
-  });
+  };
+
+  if (description) taskDataObj.description = description;
+
+  const updatedTaskData = JSON.stringify(taskDataObj);
   localStorage.setItem(taskName, updatedTaskData);
+  window.dispatchEvent(storageEvent);
   clearInterval(+listItem.getAttribute('data-interval')!);
+  this.style.display = 'none';
 }
 
 function submitFormHandler(e: Event) {
@@ -167,16 +217,21 @@ function submitFormHandler(e: Event) {
 
   const taskName = taskNameInput.value;
   const taskTime = taskTimeInput.value;
+  const taskDescription = taskDescriptionInput.value;
 
   if (!taskName.length || !taskTime.length) {
     errorParagraph.innerText = 'One of the fields are empty';
     return;
   }
 
-  const taskData = JSON.stringify({
+  const taskDataObj: TaskDataType = {
     goalTime: taskTime,
     progressTime: ZERO_TIME,
-  });
+  };
+
+  if (taskDescription) taskDataObj.description = taskDescription;
+
+  const taskData = JSON.stringify(taskDataObj);
 
   localStorage.setItem(taskName, taskData);
   window.dispatchEvent(storageEvent);
@@ -201,6 +256,8 @@ function createListItem(taskName: string, progressTime?: string) {
   playBtn.innerText = 'start';
   deleteBtn.innerText = 'delete';
   resetBtn.innerText = 'reset';
+  if (!progressTime || progressTime === ZERO_TIME)
+    resetBtn.style.display = 'none';
   playBtn.addEventListener('click', playBtnClickedHandler);
   deleteBtn.addEventListener('click', deleteBtnClickedHandler);
   resetBtn.addEventListener('click', resetBtnClickedHandler);
@@ -209,6 +266,20 @@ function createListItem(taskName: string, progressTime?: string) {
   liElement.appendChild(playBtn);
   liElement.appendChild(deleteBtn);
   liElement.appendChild(resetBtn);
+  liElement.addEventListener('click', (e) => {
+    if ((e.target as any).tagName === 'BUTTON') return;
+
+    const { goalTime, progressTime, description } = JSON.parse(
+      localStorage.getItem(taskName)!
+    ) as TaskDataType;
+    (detailModal.children[0] as HTMLHeadingElement).innerText = taskName;
+    (
+      detailModal.children[1] as HTMLTimeElement
+    ).innerText = `${progressTime.substring(0, 5)}/${goalTime}`;
+    if (description)
+      (detailModal.children[2] as HTMLParagraphElement).innerText = description;
+    detailModal.style.display = 'block';
+  });
   return liElement;
 }
 

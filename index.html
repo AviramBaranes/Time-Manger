@@ -14,35 +14,50 @@
       <p>Track your time investments of your tasks</p>
     </header>
     <section>
-      <div class="modal">
+      <div class="modal form-modal">
         <form>
           <p id="error"></p>
           <div class="inputContainer">
-            <input type="text" id="taskName" />
+            <input type="text" id="taskName" required />
             <label for="taskName">task</label>
           </div>
           <div class="inputContainer">
-            <input type="time" id="time" />
+            <input type="time" id="time" required />
             <label for="time">time</label>
+          </div>
+          <div class="inputContainer">
+            <textarea
+              name="description"
+              id="description"
+              cols="20"
+              rows="3"
+            ></textarea>
+            <label for="description">description</label>
           </div>
           <button type="submit">Add</button>
         </form>
       </div>
-      <div class="modal">
+      <div class="modal delition-modal">
         <h3>Are you sure you want to delete this task?</h3>
         <div class="modal-buttons">
           <button class="success">Yes</button>
           <button class="danger">Cancel</button>
         </div>
       </div>
-      <div class="modal">
+      <div class="modal task-finished-modal">
         <h2>Great Job!</h2>
         <p></p>
         <button>stop watch</button>
       </div>
-      <div class="modal">
+      <div class="modal summarize-modal">
         <h3>Summarize:</h3>
         <ul class="tasks-summarize"></ul>
+        <button>close</button>
+      </div>
+      <div class="modal detail-modal">
+        <h3></h3>
+        <time></time>
+        <p></p>
         <button>close</button>
       </div>
     </section>
