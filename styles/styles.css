@@ -10,4 +10,8 @@ body {
 
 .modal {
   display: none;
+}
+
+#summarize {
+  display: none;
 }/*# sourceMappingURL=styles.css.map */

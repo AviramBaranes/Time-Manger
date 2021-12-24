@@ -9,6 +9,7 @@ const summarizeModal = modals[3];
 const approveBtn = deleteModal.children[1].children[0];
 const cancelBtn = deleteModal.children[1].children[1];
 const summarizeBtn = document.getElementById('summarize') as HTMLButtonElement;
+const closeSummarizeBtn = summarizeModal.children[2];
 const form = formModal.children[0] as HTMLFormElement;
 const taskNameInput = form.children[1].children[0] as HTMLInputElement;
 const taskTimeInput = form.children[2].children[0] as HTMLInputElement;
@@ -18,53 +19,37 @@ const tasksSummarizeList = document.querySelector(
   '.tasks-summarize'
 ) as HTMLUListElement;
 
-window.addEventListener('storage', () => {
-  if (localStorage.length) summarizeBtn.style.display = 'block';
-  else summarizeBtn.style.display = 'none';
-});
+const storageEvent = new CustomEvent('storageChanged');
+
+window.addEventListener('storageChanged', storageChangedHandler);
+window.addEventListener('storage', storageChangedHandler);
 addTaskBtn.addEventListener('click', addTaskHandler);
 form.addEventListener('submit', submitFormHandler);
 summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
+closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
+
+//eventListeners
 
 function addTaskHandler() {
   formModal.style.display = 'block';
 }
 
-function createListItem(taskName: string) {
-  const liElement = document.createElement('li');
-  const h4Element = document.createElement('h4');
-  const pElement = document.createElement('p');
-  const playBtn = document.createElement('button');
-  const deleteBtn = document.createElement('button');
-  h4Element.innerText = taskName;
-  pElement.innerText = '00:00:00:00';
-  playBtn.innerText = 'start';
-  deleteBtn.innerText = 'delete';
-  playBtn.addEventListener('click', playBtnClickedHandler);
-  deleteBtn.addEventListener('click', deleteBtnClickedHandler);
-  liElement.appendChild(h4Element);
-  liElement.appendChild(pElement);
-  liElement.appendChild(playBtn);
-  liElement.appendChild(deleteBtn);
-  return liElement;
+function closeSummarizeBtnClickedHandler() {
+  summarizeModal.style.display = 'none';
+  const listItems = Array.from(tasksSummarizeList.children);
+  listItems.forEach((item) => item.remove());
+  summarizeBtn.disabled = false;
 }
 
-function createSummarizeListItem(
-  taskName: string,
-  taskProgress: string,
-  taskGoal: string
-) {
-  const liElement = document.createElement('li');
-  const h4Element = document.createElement('h4');
-  const pElement = document.createElement('p');
-  h4Element.innerText = `${taskName}:`;
-  pElement.innerText = `${taskProgress}/${taskGoal}`;
-  liElement.appendChild(h4Element);
-  liElement.appendChild(pElement);
-  return liElement;
+function storageChangedHandler() {
+  if (localStorage.length) summarizeBtn.style.display = 'block';
+  else summarizeBtn.style.display = 'none';
 }
 
-function summarizeBtnClickedHandler() {
+function summarizeBtnClickedHandler(this: HTMLButtonElement) {
+  // if (summarizeModal.style.display === 'block') {
+  // } else {
+  this.disabled = true;
   for (let i = 0; i < localStorage.length; i++) {
     const taskData = JSON.parse(localStorage.getItem(localStorage.key(i)!)!);
     const modifiedTaskProgress = taskData.progressTime.substring(0, 5);
@@ -75,6 +60,8 @@ function summarizeBtnClickedHandler() {
     );
     tasksSummarizeList.appendChild(newListItem);
   }
+  summarizeModal.style.display = 'block';
+  // }
 }
 
 function deleteBtnClickedHandler(this: HTMLButtonElement) {
@@ -84,6 +71,7 @@ function deleteBtnClickedHandler(this: HTMLButtonElement) {
     localStorage.removeItem(
       (this.parentElement?.children[0] as HTMLHeadingElement).innerText
     );
+    window.dispatchEvent(storageEvent);
     this.parentElement!.remove();
     deleteModal.style.display = 'none';
   });
@@ -142,6 +130,7 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
         progressTime;
       const updatedTaskData = JSON.stringify({ goalTime, progressTime });
       localStorage.setItem(taskName, updatedTaskData);
+      window.dispatchEvent(storageEvent);
       currentListItem.setAttribute('data-interval', interval.toString());
     }, 10);
   } else {
@@ -150,7 +139,7 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
   }
 }
 
-function submitFormHandler(e: SubmitEvent) {
+function submitFormHandler(e: Event) {
   e.preventDefault();
 
   const taskName = taskNameInput.value;
@@ -167,10 +156,46 @@ function submitFormHandler(e: SubmitEvent) {
   });
 
   localStorage.setItem(taskName, taskData);
-
+  window.dispatchEvent(storageEvent);
   const newListItem = createListItem(taskName);
   tasksList.appendChild(newListItem);
   taskNameInput.value = '';
   taskTimeInput.value = '';
   formModal.style.display = 'none';
+}
+
+//create DOM elements
+
+function createListItem(taskName: string) {
+  const liElement = document.createElement('li');
+  const h4Element = document.createElement('h4');
+  const pElement = document.createElement('p');
+  const playBtn = document.createElement('button');
+  const deleteBtn = document.createElement('button');
+  h4Element.innerText = taskName;
+  pElement.innerText = '00:00:00:00';
+  playBtn.innerText = 'start';
+  deleteBtn.innerText = 'delete';
+  playBtn.addEventListener('click', playBtnClickedHandler);
+  deleteBtn.addEventListener('click', deleteBtnClickedHandler);
+  liElement.appendChild(h4Element);
+  liElement.appendChild(pElement);
+  liElement.appendChild(playBtn);
+  liElement.appendChild(deleteBtn);
+  return liElement;
+}
+
+function createSummarizeListItem(
+  taskName: string,
+  taskProgress: string,
+  taskGoal: string
+) {
+  const liElement = document.createElement('li');
+  const h4Element = document.createElement('h4');
+  const pElement = document.createElement('p');
+  h4Element.innerText = `${taskName}:`;
+  pElement.innerText = `${taskProgress}/${taskGoal}`;
+  liElement.appendChild(h4Element);
+  liElement.appendChild(pElement);
+  return liElement;
 }

@@ -1,10 +1,10 @@
 1. handle duplicate tasks
 
-2. add time goal achieved + summarize
+2. add on page reload load the local storage data.
 
-3. add on page reload load the local storage data.
+3. add reset btn.
 
-4. add reset btn.
+4. add modal for more information and changing the progress time
 
 5. add icons
 
@@ -13,3 +13,5 @@
 7. add animations
 
 8. add footer
+
+9. deploy

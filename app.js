@@ -8,59 +8,48 @@ var summarizeModal = modals[3];
 var approveBtn = deleteModal.children[1].children[0];
 var cancelBtn = deleteModal.children[1].children[1];
 var summarizeBtn = document.getElementById('summarize');
+var closeSummarizeBtn = summarizeModal.children[2];
 var form = formModal.children[0];
 var taskNameInput = form.children[1].children[0];
 var taskTimeInput = form.children[2].children[0];
 var errorParagraph = document.getElementById('error');
 var tasksList = document.querySelector('.tasks-lists');
 var tasksSummarizeList = document.querySelector('.tasks-summarize');
-window.addEventListener('storage', function () {
+var storageEvent = new CustomEvent('storageChanged');
+window.addEventListener('storageChanged', storageChangedHandler);
+window.addEventListener('storage', storageChangedHandler);
+addTaskBtn.addEventListener('click', addTaskHandler);
+form.addEventListener('submit', submitFormHandler);
+summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
+closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
+//eventListeners
+function addTaskHandler() {
+    formModal.style.display = 'block';
+}
+function closeSummarizeBtnClickedHandler() {
+    summarizeModal.style.display = 'none';
+    var listItems = Array.from(tasksSummarizeList.children);
+    listItems.forEach(function (item) { return item.remove(); });
+    summarizeBtn.disabled = false;
+}
+function storageChangedHandler() {
     if (localStorage.length)
         summarizeBtn.style.display = 'block';
     else
         summarizeBtn.style.display = 'none';
-});
-addTaskBtn.addEventListener('click', addTaskHandler);
-form.addEventListener('submit', submitFormHandler);
-summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
-function addTaskHandler() {
-    formModal.style.display = 'block';
-}
-function createListItem(taskName) {
-    var liElement = document.createElement('li');
-    var h4Element = document.createElement('h4');
-    var pElement = document.createElement('p');
-    var playBtn = document.createElement('button');
-    var deleteBtn = document.createElement('button');
-    h4Element.innerText = taskName;
-    pElement.innerText = '00:00:00:00';
-    playBtn.innerText = 'start';
-    deleteBtn.innerText = 'delete';
-    playBtn.addEventListener('click', playBtnClickedHandler);
-    deleteBtn.addEventListener('click', deleteBtnClickedHandler);
-    liElement.appendChild(h4Element);
-    liElement.appendChild(pElement);
-    liElement.appendChild(playBtn);
-    liElement.appendChild(deleteBtn);
-    return liElement;
-}
-function createSummarizeListItem(taskName, taskProgress, taskGoal) {
-    var liElement = document.createElement('li');
-    var h4Element = document.createElement('h4');
-    var pElement = document.createElement('p');
-    h4Element.innerText = taskName + ":";
-    pElement.innerText = taskProgress + "/" + taskGoal;
-    liElement.appendChild(h4Element);
-    liElement.appendChild(pElement);
-    return liElement;
 }
 function summarizeBtnClickedHandler() {
+    // if (summarizeModal.style.display === 'block') {
+    // } else {
+    this.disabled = true;
     for (var i = 0; i < localStorage.length; i++) {
         var taskData = JSON.parse(localStorage.getItem(localStorage.key(i)));
         var modifiedTaskProgress = taskData.progressTime.substring(0, 5);
         var newListItem = createSummarizeListItem(localStorage.key(i), modifiedTaskProgress, taskData.goalTime);
         tasksSummarizeList.appendChild(newListItem);
     }
+    summarizeModal.style.display = 'block';
+    // }
 }
 function deleteBtnClickedHandler() {
     var _this = this;
@@ -69,6 +58,7 @@ function deleteBtnClickedHandler() {
     approveBtn.addEventListener('click', function () {
         var _a;
         localStorage.removeItem(((_a = _this.parentElement) === null || _a === void 0 ? void 0 : _a.children[0]).innerText);
+        window.dispatchEvent(storageEvent);
         _this.parentElement.remove();
         deleteModal.style.display = 'none';
     });
@@ -124,6 +114,7 @@ function playBtnClickedHandler() {
                 progressTime;
             var updatedTaskData = JSON.stringify({ goalTime: goalTime, progressTime: progressTime });
             localStorage.setItem(taskName, updatedTaskData);
+            window.dispatchEvent(storageEvent);
             currentListItem.setAttribute('data-interval', interval_1.toString());
         }, 10);
     }
@@ -145,9 +136,39 @@ function submitFormHandler(e) {
         progressTime: '00:00:00:00',
     });
     localStorage.setItem(taskName, taskData);
+    window.dispatchEvent(storageEvent);
     var newListItem = createListItem(taskName);
     tasksList.appendChild(newListItem);
     taskNameInput.value = '';
     taskTimeInput.value = '';
     formModal.style.display = 'none';
+}
+//create DOM elements
+function createListItem(taskName) {
+    var liElement = document.createElement('li');
+    var h4Element = document.createElement('h4');
+    var pElement = document.createElement('p');
+    var playBtn = document.createElement('button');
+    var deleteBtn = document.createElement('button');
+    h4Element.innerText = taskName;
+    pElement.innerText = '00:00:00:00';
+    playBtn.innerText = 'start';
+    deleteBtn.innerText = 'delete';
+    playBtn.addEventListener('click', playBtnClickedHandler);
+    deleteBtn.addEventListener('click', deleteBtnClickedHandler);
+    liElement.appendChild(h4Element);
+    liElement.appendChild(pElement);
+    liElement.appendChild(playBtn);
+    liElement.appendChild(deleteBtn);
+    return liElement;
+}
+function createSummarizeListItem(taskName, taskProgress, taskGoal) {
+    var liElement = document.createElement('li');
+    var h4Element = document.createElement('h4');
+    var pElement = document.createElement('p');
+    h4Element.innerText = taskName + ":";
+    pElement.innerText = taskProgress + "/" + taskGoal;
+    liElement.appendChild(h4Element);
+    liElement.appendChild(pElement);
+    return liElement;
 }
