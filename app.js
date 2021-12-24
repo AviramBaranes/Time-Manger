@@ -183,6 +183,10 @@ function submitFormHandler(e) {
         errorParagraph.innerText = 'One of the fields are empty';
         return;
     }
+    if (!!localStorage.getItem(taskName)) {
+        errorParagraph.innerText = 'Task already Exist';
+        return;
+    }
     var taskDataObj = {
         goalTime: taskTime,
         progressTime: ZERO_TIME,

@@ -224,6 +224,11 @@ function submitFormHandler(e: Event) {
     return;
   }
 
+  if (!!localStorage.getItem(taskName)) {
+    errorParagraph.innerText = 'Task already Exist';
+    return;
+  }
+
   const taskDataObj: TaskDataType = {
     goalTime: taskTime,
     progressTime: ZERO_TIME,
