@@ -104,11 +104,10 @@ function deleteBtnClickedHandler(this: HTMLButtonElement) {
   deleteModal.style.display = 'block';
   //closure
   approveBtn.addEventListener('click', () => {
-    localStorage.removeItem(
-      (this.parentElement?.children[0] as HTMLHeadingElement).innerText
-    );
+    const listItem = this.parentElement!.parentElement!;
+    localStorage.removeItem(listItem.children[0].children[0].innerHTML);
     window.dispatchEvent(storageEvent);
-    this.parentElement!.remove();
+    listItem.remove();
     deleteModal.style.display = 'none';
   });
   cancelBtn.addEventListener('click', () => {
@@ -118,18 +117,14 @@ function deleteBtnClickedHandler(this: HTMLButtonElement) {
 
 function playBtnClickedHandler(this: HTMLButtonElement) {
   const currentListItem = this.parentElement!.parentElement!;
-
   if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
     this.innerHTML = '<i class="fas fa-pause"></i>';
     const interval = setInterval(() => {
-      const paragraphElement = currentListItem.children[0].children[1];
       const resetBtn = currentListItem.children[1]
         .children[2] as HTMLButtonElement;
+      resetBtn.style.display = 'none';
+      const paragraphElement = currentListItem.children[0].children[1];
       const currentTime = paragraphElement.innerHTML;
-      if (currentTime !== ZERO_TIME) {
-        resetBtn.style.display = 'inline';
-      }
-
       const [hours, minutes, seconds, centiseconds] = currentTime.split(':');
       let newTime: string[] = [];
       if (centiseconds === '99') {
@@ -183,6 +178,14 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
       currentListItem.setAttribute('data-interval', interval.toString());
     }, 1);
   } else {
+    const paragraphElement = currentListItem.children[0].children[1];
+    const currentTime = paragraphElement.innerHTML;
+    const resetBtn = currentListItem.children[1]
+      .children[2] as HTMLButtonElement;
+    if (currentTime !== ZERO_TIME) {
+      resetBtn.style.display = 'inline';
+    }
+
     this.innerHTML = '<i class="fas fa-play"></i>';
     clearInterval(+currentListItem.getAttribute('data-interval')!);
   }

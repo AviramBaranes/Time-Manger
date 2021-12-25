@@ -80,10 +80,10 @@ function deleteBtnClickedHandler() {
     deleteModal.style.display = 'block';
     //closure
     approveBtn.addEventListener('click', function () {
-        var _a;
-        localStorage.removeItem(((_a = _this.parentElement) === null || _a === void 0 ? void 0 : _a.children[0]).innerText);
+        var listItem = _this.parentElement.parentElement;
+        localStorage.removeItem(listItem.children[0].children[0].innerHTML);
         window.dispatchEvent(storageEvent);
-        _this.parentElement.remove();
+        listItem.remove();
         deleteModal.style.display = 'none';
     });
     cancelBtn.addEventListener('click', function () {
@@ -95,13 +95,11 @@ function playBtnClickedHandler() {
     if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
         this.innerHTML = '<i class="fas fa-pause"></i>';
         var interval_1 = setInterval(function () {
-            var paragraphElement = currentListItem.children[0].children[1];
             var resetBtn = currentListItem.children[1]
                 .children[2];
+            resetBtn.style.display = 'none';
+            var paragraphElement = currentListItem.children[0].children[1];
             var currentTime = paragraphElement.innerHTML;
-            if (currentTime !== ZERO_TIME) {
-                resetBtn.style.display = 'inline';
-            }
             var _a = currentTime.split(':'), hours = _a[0], minutes = _a[1], seconds = _a[2], centiseconds = _a[3];
             var newTime = [];
             if (centiseconds === '99') {
@@ -150,6 +148,13 @@ function playBtnClickedHandler() {
         }, 1);
     }
     else {
+        var paragraphElement = currentListItem.children[0].children[1];
+        var currentTime = paragraphElement.innerHTML;
+        var resetBtn = currentListItem.children[1]
+            .children[2];
+        if (currentTime !== ZERO_TIME) {
+            resetBtn.style.display = 'inline';
+        }
         this.innerHTML = '<i class="fas fa-play"></i>';
         clearInterval(+currentListItem.getAttribute('data-interval'));
     }
