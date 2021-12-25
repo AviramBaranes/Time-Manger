@@ -145,6 +145,63 @@ button {
   left: 50%;
   top: 15%;
   transform: translateX(-50%);
+  form {
+    width: 100%;
+  }
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 1rem auto;
+
+  .active {
+    transform: translate(0, 5px) scale(0.8);
+    color: $primary-color;
+    font-weight: bolder;
+  }
+
+  input,
+  textarea {
+    color: black;
+    padding: 1.2rem 1rem;
+    outline: 0;
+    border: 1px solid black;
+    border-radius: 4px;
+    background: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8rem;
+
+    &:focus {
+      color: black;
+      border: 1px solid black;
+      border-bottom: 3px solid $primary-color;
+      background-color: white;
+    }
+  }
+
+  label {
+    color: black;
+    font-size: 0.9rem;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 0 12px;
+    pointer-events: none;
+    position: absolute;
+    transform: translate(0, 1rem) scale(1);
+    transform-origin: top left;
+    transition: all 0.2s ease-out;
+  }
+  &:focus-within label {
+    transform: translate(0, 5px) scale(0.8);
+    color: var(--primary-color);
+    font-weight: bolder;
+  }
+}
+
+#error {
+  color: red;
 }
 
 #summarize {

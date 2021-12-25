@@ -47,6 +47,9 @@ const ZERO_TIME = '00:00:00:00';
   window.addEventListener('storage', storageChangedHandler);
   addTaskBtn.addEventListener('click', addTaskHandler);
   form.addEventListener('submit', submitFormHandler);
+  taskNameInput.addEventListener('change', inputChangedHandler);
+  taskTimeInput.addEventListener('change', inputChangedHandler);
+  taskDescriptionInput.addEventListener('change', inputChangedHandler);
   summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
   closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
   closeDetailModalBtn.addEventListener(
@@ -233,6 +236,12 @@ function backdropClickedHandler() {
   modals.forEach((modal) => (modal.style.display = 'none'));
   backdrop.style.display = 'none';
   closeSummarizeBtnClickedHandler();
+}
+
+function inputChangedHandler(this: HTMLInputElement) {
+  const label = this.nextElementSibling!;
+  if (this.value.length) label.className = 'active';
+  else label.className = '';
 }
 
 function submitFormHandler(e: Event) {

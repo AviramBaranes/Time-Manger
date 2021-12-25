@@ -24,15 +24,15 @@
         <div class="modal form-modal">
           <form>
             <p id="error"></p>
-            <div class="inputContainer">
+            <div class="input-container">
               <input type="text" id="taskName" required />
               <label for="taskName">task</label>
             </div>
-            <div class="inputContainer">
-              <input type="time" id="time" required />
+            <div class="input-container">
+              <input type="time" id="time" max="05:00" min="00:10" required />
               <label for="time">time</label>
             </div>
-            <div class="inputContainer">
+            <div class="input-container">
               <textarea
                 name="description"
                 id="description"
