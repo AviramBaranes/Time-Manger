@@ -4,6 +4,7 @@ interface TaskDataType {
   description?: string;
 }
 const addTaskBtn = document.getElementById('addBtn') as HTMLButtonElement;
+const backdrop = document.querySelector('.backdrop') as HTMLDivElement;
 const modals = document.querySelectorAll(
   '.modal'
 ) as NodeListOf<HTMLDivElement>;
@@ -52,23 +53,19 @@ const ZERO_TIME = '00:00:00:00';
     'click',
     closeDetailModalBtnClickedHandler
   );
+  backdrop.addEventListener('click', backdropClickedHandler);
 })();
 
 //eventListeners
 
 function addTaskHandler() {
   formModal.style.display = 'block';
+  backdrop.style.display = 'block';
 }
 
 function closeDetailModalBtnClickedHandler() {
+  backdrop.style.display = 'none';
   detailModal.style.display = 'none';
-}
-
-function closeSummarizeBtnClickedHandler() {
-  summarizeModal.style.display = 'none';
-  const listItems = Array.from(tasksSummarizeList.children);
-  listItems.forEach((item) => item.remove());
-  summarizeBtn.disabled = false;
 }
 
 function storageChangedHandler() {
@@ -84,8 +81,6 @@ function storageChangedHandler() {
 }
 
 function summarizeBtnClickedHandler(this: HTMLButtonElement) {
-  // if (summarizeModal.style.display === 'block') {
-  // } else {
   this.disabled = true;
   for (let i = 0; i < localStorage.length; i++) {
     const taskData = JSON.parse(localStorage.getItem(localStorage.key(i)!)!);
@@ -98,11 +93,20 @@ function summarizeBtnClickedHandler(this: HTMLButtonElement) {
     tasksSummarizeList.appendChild(newListItem);
   }
   summarizeModal.style.display = 'block';
-  // }
+  backdrop.style.display = 'block';
+}
+
+function closeSummarizeBtnClickedHandler() {
+  summarizeModal.style.display = 'none';
+  backdrop.style.display = 'none';
+  const listItems = Array.from(tasksSummarizeList.children);
+  listItems.forEach((item) => item.remove());
+  summarizeBtn.disabled = false;
 }
 
 function deleteBtnClickedHandler(this: HTMLButtonElement) {
   deleteModal.style.display = 'block';
+  backdrop.style.display = 'block';
   //closure
   approveBtn.addEventListener('click', () => {
     const listItem = this.parentElement!.parentElement!;
@@ -110,11 +114,14 @@ function deleteBtnClickedHandler(this: HTMLButtonElement) {
     window.dispatchEvent(storageEvent);
     listItem.remove();
     deleteModal.style.display = 'none';
+    backdrop.style.display = 'none';
   });
   cancelBtn.addEventListener('click', () => {
     deleteModal.style.display = 'none';
+    backdrop.style.display = 'none';
   });
 }
+
 function playBtnClickedHandler(this: HTMLButtonElement) {
   const currentListItem = this.parentElement!.parentElement!;
   if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
@@ -154,13 +161,21 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
       ) as TaskDataType;
 
       const [hoursGoal, minutesGoal] = goalTime.split(':');
-      if (hoursGoal === newTime[0] && minutesGoal === newTime[1]) {
+      if (
+        hoursGoal === newTime[0] &&
+        minutesGoal === newTime[1] &&
+        newTime[2] === '00' &&
+        newTime[3] === '00'
+      ) {
         audio.play();
         taskFinishedModal.children[1].innerHTML = `You finished the task: ${taskName}`;
         taskFinishedModal.style.display = 'block';
+        backdrop.style.display = 'block';
         taskFinishedModal.children[2].addEventListener('click', () => {
           clearInterval(interval);
+          this.innerHTML = '<i class="fas fa-play"></i>';
           taskFinishedModal.style.display = 'none';
+          backdrop.style.display = 'none';
           (taskFinishedModal.children[1] as HTMLParagraphElement).innerText =
             '';
         });
@@ -214,6 +229,12 @@ function resetBtnClickedHandler(this: HTMLButtonElement) {
   this.style.display = 'none';
 }
 
+function backdropClickedHandler() {
+  modals.forEach((modal) => (modal.style.display = 'none'));
+  backdrop.style.display = 'none';
+  closeSummarizeBtnClickedHandler();
+}
+
 function submitFormHandler(e: Event) {
   e.preventDefault();
 
@@ -252,6 +273,7 @@ function submitFormHandler(e: Event) {
   taskNameInput.value = '';
   taskTimeInput.value = '';
   formModal.style.display = 'none';
+  backdrop.style.display = 'none';
 }
 
 //create DOM elements
@@ -296,6 +318,7 @@ function createListItem(taskName: string, progressTime?: string) {
     if (description)
       (detailModal.children[2] as HTMLParagraphElement).innerText = description;
     detailModal.style.display = 'block';
+    backdrop.style.display = 'block';
   });
   return liElement;
 }

@@ -5,6 +5,19 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100vh;
+}
+
+body {
+  font-family: "Quicksand", sans-serif;
+}
+body main,
+body header {
+  width: 80%;
+  margin: auto;
+}
+
 ul {
   list-style: none;
 }
@@ -14,19 +27,12 @@ button {
   background-color: white;
 }
 
-body {
-  font-family: "Quicksand", sans-serif;
-  background-color: white;
-  width: 80%;
-  margin: auto;
-}
-
 .title {
   text-align: center;
-  margin-top: 2rem;
   margin-bottom: 2.2rem;
 }
 .title h1 {
+  margin-top: 2rem;
   font-size: 2.4rem;
   color: #e92222;
   margin-bottom: 0.6rem;
@@ -77,9 +83,9 @@ body {
   border-radius: 0.5rem;
   margin: 1rem;
   cursor: pointer;
-  position: relative;
   font-size: 1rem;
   font-weight: bolder;
+  z-index: 0;
 }
 #addBtn i {
   position: absolute;
@@ -118,8 +124,31 @@ body {
   }
 }
 
+.backdrop {
+  display: none;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.446);
+}
+
 .modal {
   display: none;
+  z-index: 100;
+  width: 75%;
+  position: absolute;
+  border: 1px solid black;
+  background-color: white;
+  padding: 3rem;
+  text-align: center;
+  border-radius: 1rem;
+  left: 50%;
+  top: 15%;
+  transform: translateX(-50%);
 }
 
 #summarize {

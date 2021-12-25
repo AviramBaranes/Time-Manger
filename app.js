@@ -1,5 +1,6 @@
 "use strict";
 var addTaskBtn = document.getElementById('addBtn');
+var backdrop = document.querySelector('.backdrop');
 var modals = document.querySelectorAll('.modal');
 var formModal = modals[0];
 var deleteModal = modals[1];
@@ -37,19 +38,16 @@ var ZERO_TIME = '00:00:00:00';
     summarizeBtn.addEventListener('click', summarizeBtnClickedHandler);
     closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
     closeDetailModalBtn.addEventListener('click', closeDetailModalBtnClickedHandler);
+    backdrop.addEventListener('click', backdropClickedHandler);
 })();
 //eventListeners
 function addTaskHandler() {
     formModal.style.display = 'block';
+    backdrop.style.display = 'block';
 }
 function closeDetailModalBtnClickedHandler() {
+    backdrop.style.display = 'none';
     detailModal.style.display = 'none';
-}
-function closeSummarizeBtnClickedHandler() {
-    summarizeModal.style.display = 'none';
-    var listItems = Array.from(tasksSummarizeList.children);
-    listItems.forEach(function (item) { return item.remove(); });
-    summarizeBtn.disabled = false;
 }
 function storageChangedHandler() {
     var isProgressTime = false;
@@ -64,8 +62,6 @@ function storageChangedHandler() {
         summarizeBtn.style.display = 'none';
 }
 function summarizeBtnClickedHandler() {
-    // if (summarizeModal.style.display === 'block') {
-    // } else {
     this.disabled = true;
     for (var i = 0; i < localStorage.length; i++) {
         var taskData = JSON.parse(localStorage.getItem(localStorage.key(i)));
@@ -74,11 +70,19 @@ function summarizeBtnClickedHandler() {
         tasksSummarizeList.appendChild(newListItem);
     }
     summarizeModal.style.display = 'block';
-    // }
+    backdrop.style.display = 'block';
+}
+function closeSummarizeBtnClickedHandler() {
+    summarizeModal.style.display = 'none';
+    backdrop.style.display = 'none';
+    var listItems = Array.from(tasksSummarizeList.children);
+    listItems.forEach(function (item) { return item.remove(); });
+    summarizeBtn.disabled = false;
 }
 function deleteBtnClickedHandler() {
     var _this = this;
     deleteModal.style.display = 'block';
+    backdrop.style.display = 'block';
     //closure
     approveBtn.addEventListener('click', function () {
         var listItem = _this.parentElement.parentElement;
@@ -86,12 +90,15 @@ function deleteBtnClickedHandler() {
         window.dispatchEvent(storageEvent);
         listItem.remove();
         deleteModal.style.display = 'none';
+        backdrop.style.display = 'none';
     });
     cancelBtn.addEventListener('click', function () {
         deleteModal.style.display = 'none';
+        backdrop.style.display = 'none';
     });
 }
 function playBtnClickedHandler() {
+    var _this = this;
     var currentListItem = this.parentElement.parentElement;
     if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
         this.innerHTML = '<i class="fas fa-pause"></i>';
@@ -126,13 +133,19 @@ function playBtnClickedHandler() {
             var taskName = currentListItem.children[0].children[0].innerHTML;
             var _b = JSON.parse(localStorage.getItem(taskName)), goalTime = _b.goalTime, description = _b.description;
             var _c = goalTime.split(':'), hoursGoal = _c[0], minutesGoal = _c[1];
-            if (hoursGoal === newTime[0] && minutesGoal === newTime[1]) {
+            if (hoursGoal === newTime[0] &&
+                minutesGoal === newTime[1] &&
+                newTime[2] === '00' &&
+                newTime[3] === '00') {
                 audio.play();
                 taskFinishedModal.children[1].innerHTML = "You finished the task: " + taskName;
                 taskFinishedModal.style.display = 'block';
+                backdrop.style.display = 'block';
                 taskFinishedModal.children[2].addEventListener('click', function () {
                     clearInterval(interval_1);
+                    _this.innerHTML = '<i class="fas fa-play"></i>';
                     taskFinishedModal.style.display = 'none';
+                    backdrop.style.display = 'none';
                     taskFinishedModal.children[1].innerText =
                         '';
                 });
@@ -178,6 +191,11 @@ function resetBtnClickedHandler() {
     clearInterval(+listItem.getAttribute('data-interval'));
     this.style.display = 'none';
 }
+function backdropClickedHandler() {
+    modals.forEach(function (modal) { return (modal.style.display = 'none'); });
+    backdrop.style.display = 'none';
+    closeSummarizeBtnClickedHandler();
+}
 function submitFormHandler(e) {
     e.preventDefault();
     var taskName = taskNameInput.value;
@@ -209,6 +227,7 @@ function submitFormHandler(e) {
     taskNameInput.value = '';
     taskTimeInput.value = '';
     formModal.style.display = 'none';
+    backdrop.style.display = 'none';
 }
 //create DOM elements
 function createListItem(taskName, progressTime) {
@@ -248,6 +267,7 @@ function createListItem(taskName, progressTime) {
         if (description)
             detailModal.children[2].innerText = description;
         detailModal.style.display = 'block';
+        backdrop.style.display = 'block';
     });
     return liElement;
 }
