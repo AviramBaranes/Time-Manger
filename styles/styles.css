@@ -242,7 +242,7 @@ button {
   border-color: red;
 }
 
-.danger {
+.close {
   background-color: #3e65e4;
   border-color: #3e65e4;
 }
@@ -284,6 +284,26 @@ button {
 }
 #summarize i {
   font-size: 2rem;
+}
+
+.detail-modal h3 {
+  color: #3e65e4;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+.detail-modal time {
+  font-size: 0.8rem;
+}
+.detail-modal p {
+  margin: 1.7rem 0rem;
+  font-size: 0.8rem;
+  text-align: left;
+}
+.detail-modal button {
+  padding: 0.3rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: bold;
+  color: white;
 }
 
 i {

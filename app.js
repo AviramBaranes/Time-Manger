@@ -49,8 +49,12 @@ function addTaskHandler() {
     backdrop.style.display = 'block';
 }
 function closeDetailModalBtnClickedHandler() {
+    detailModal.children[0].innerHTML = '';
+    detailModal.children[1].innerHTML = '';
+    detailModal.children[2].innerHTML = '';
     backdrop.style.display = 'none';
     detailModal.style.display = 'none';
+    taskFinishedModal.style.display = 'none';
 }
 function storageChangedHandler() {
     var isProgressTime = false;
@@ -195,8 +199,9 @@ function resetBtnClickedHandler() {
     this.style.display = 'none';
 }
 function backdropClickedHandler() {
-    modals.forEach(function (modal) { return (modal.style.display = 'none'); });
-    backdrop.style.display = 'none';
+    taskFinishedModal.style.display = 'none';
+    deleteModal.style.display = 'none';
+    closeDetailModalBtnClickedHandler();
     closeSummarizeBtnClickedHandler();
 }
 function inputChangedHandler() {
@@ -272,10 +277,10 @@ function createListItem(taskName, progressTime) {
         if (e.target.tagName === 'BUTTON')
             return;
         var _a = JSON.parse(localStorage.getItem(taskName)), goalTime = _a.goalTime, progressTime = _a.progressTime, description = _a.description;
-        detailModal.children[0].innerText = taskName;
-        detailModal.children[1].innerText = progressTime.substring(0, 5) + "/" + goalTime;
+        detailModal.children[0].innerHTML = taskName;
+        detailModal.children[1].innerHTML = progressTime.substring(0, 5) + "/" + goalTime;
         if (description)
-            detailModal.children[2].innerText = description;
+            detailModal.children[2].innerHTML = description;
         detailModal.style.display = 'block';
         backdrop.style.display = 'block';
     });

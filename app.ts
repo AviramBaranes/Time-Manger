@@ -67,8 +67,12 @@ function addTaskHandler() {
 }
 
 function closeDetailModalBtnClickedHandler() {
+  detailModal.children[0].innerHTML = '';
+  detailModal.children[1].innerHTML = '';
+  detailModal.children[2].innerHTML = '';
   backdrop.style.display = 'none';
   detailModal.style.display = 'none';
+  taskFinishedModal.style.display = 'none';
 }
 
 function storageChangedHandler() {
@@ -233,8 +237,9 @@ function resetBtnClickedHandler(this: HTMLButtonElement) {
 }
 
 function backdropClickedHandler() {
-  modals.forEach((modal) => (modal.style.display = 'none'));
-  backdrop.style.display = 'none';
+  taskFinishedModal.style.display = 'none';
+  deleteModal.style.display = 'none';
+  closeDetailModalBtnClickedHandler();
   closeSummarizeBtnClickedHandler();
 }
 
@@ -320,12 +325,12 @@ function createListItem(taskName: string, progressTime?: string) {
     const { goalTime, progressTime, description } = JSON.parse(
       localStorage.getItem(taskName)!
     ) as TaskDataType;
-    (detailModal.children[0] as HTMLHeadingElement).innerText = taskName;
-    (
-      detailModal.children[1] as HTMLTimeElement
-    ).innerText = `${progressTime.substring(0, 5)}/${goalTime}`;
-    if (description)
-      (detailModal.children[2] as HTMLParagraphElement).innerText = description;
+    detailModal.children[0].innerHTML = taskName;
+    detailModal.children[1].innerHTML = `${progressTime.substring(
+      0,
+      5
+    )}/${goalTime}`;
+    if (description) detailModal.children[2].innerHTML = description;
     detailModal.style.display = 'block';
     backdrop.style.display = 'block';
   });

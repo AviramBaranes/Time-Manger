@@ -249,7 +249,7 @@ button {
   border-color: red;
 }
 
-.danger {
+.close {
   background-color: $primary-color;
   border-color: $primary-color;
 }
@@ -289,6 +289,25 @@ button {
   }
   i {
     font-size: 2rem;
+  }
+}
+
+.detail-modal {
+  h3 {
+    color: $primary-color;
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+  }
+  time {
+    font-size: 0.8rem;
+  }
+  p {
+    margin: 1.7rem 0rem;
+    font-size: 0.8rem;
+    text-align: left;
+  }
+  button {
+    @include modal-button;
   }
 }
 
