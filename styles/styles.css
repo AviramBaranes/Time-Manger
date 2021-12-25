@@ -23,6 +23,7 @@ ul {
 }
 
 button {
+  cursor: pointer;
   border: black 1px solid;
   background-color: white;
 }
@@ -34,13 +35,13 @@ button {
 .title h1 {
   margin-top: 2rem;
   font-size: 2.4rem;
-  color: #e92222;
+  color: #3e65e4;
   margin-bottom: 0.6rem;
 }
 
 .tasks-list li {
   display: flex;
-  border: 2px solid #e92222;
+  border: 2px solid #3e65e4;
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
@@ -48,11 +49,15 @@ button {
   flex-direction: column;
 }
 .tasks-list li h4 {
-  color: #ff1900;
+  color: #3e65e4;
 }
 .tasks-list li p {
   font-size: 0.8rem;
   width: 4.4rem;
+}
+
+.fa-trash-alt {
+  color: red;
 }
 
 .text-container,
@@ -150,8 +155,18 @@ button {
   top: 15%;
   transform: translateX(-50%);
 }
-.modal form {
+
+.form-modal form {
   width: 100%;
+}
+.form-modal form h2 {
+  color: #3e65e4;
+}
+.form-modal form button {
+  padding: 0.6rem 2rem;
+  font-size: 1.3rem;
+  border-radius: 1rem;
+  background-color: #3e65e4;
 }
 
 .input-container {
@@ -163,7 +178,7 @@ button {
 }
 .input-container .active {
   transform: translate(0, 5px) scale(0.8);
-  color: #e92222;
+  color: #3e65e4;
   font-weight: bolder;
 }
 .input-container input,
@@ -181,7 +196,7 @@ button {
 .input-container textarea:focus {
   color: black;
   border: 1px solid black;
-  border-bottom: 3px solid #e92222;
+  border-bottom: 3px solid #3e65e4;
   background-color: white;
 }
 .input-container label {
@@ -209,7 +224,7 @@ button {
   display: none;
   margin: auto;
   padding: 1rem 3rem;
-  color: #e92222;
+  color: #3e65e4;
   border-radius: 1rem;
 }
 #summarize span {

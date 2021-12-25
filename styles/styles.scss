@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap');
 
-$primary-color: rgb(233, 34, 34);
+$primary-color: rgb(62, 101, 228);
 
 * {
   padding: 0;
@@ -26,6 +26,7 @@ ul {
 }
 
 button {
+  cursor: pointer;
   border: black 1px solid;
   background-color: white;
 }
@@ -51,13 +52,17 @@ button {
     display: flex;
     flex-direction: column;
     h4 {
-      color: rgb(255, 25, 0);
+      color: $primary-color;
     }
     p {
       font-size: 0.8rem;
       width: 4.4rem;
     }
   }
+}
+
+.fa-trash-alt {
+  color: red;
 }
 
 .text-container,
@@ -145,8 +150,20 @@ button {
   left: 50%;
   top: 15%;
   transform: translateX(-50%);
+}
+
+.form-modal {
   form {
     width: 100%;
+    h2 {
+      color: $primary-color;
+    }
+    button {
+      padding: 0.6rem 2rem;
+      font-size: 1.3rem;
+      border-radius: 1rem;
+      background-color: rgb(62, 101, 228);
+    }
   }
 }
 

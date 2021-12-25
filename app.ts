@@ -19,9 +19,9 @@ const cancelBtn = deleteModal.children[1].children[1];
 const summarizeBtn = document.getElementById('summarize') as HTMLButtonElement;
 const closeSummarizeBtn = summarizeModal.children[2];
 const form = formModal.children[0] as HTMLFormElement;
-const taskNameInput = form.children[1].children[0] as HTMLInputElement;
-const taskTimeInput = form.children[2].children[0] as HTMLInputElement;
-const taskDescriptionInput = form.children[3]
+const taskNameInput = form.children[2].children[0] as HTMLInputElement;
+const taskTimeInput = form.children[3].children[0] as HTMLInputElement;
+const taskDescriptionInput = form.children[4]
   .children[0] as HTMLTextAreaElement;
 const errorParagraph = document.getElementById('error') as HTMLParagraphElement;
 const tasksList = document.querySelector('.tasks-list') as HTMLUListElement;

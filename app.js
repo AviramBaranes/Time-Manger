@@ -13,9 +13,9 @@ var cancelBtn = deleteModal.children[1].children[1];
 var summarizeBtn = document.getElementById('summarize');
 var closeSummarizeBtn = summarizeModal.children[2];
 var form = formModal.children[0];
-var taskNameInput = form.children[1].children[0];
-var taskTimeInput = form.children[2].children[0];
-var taskDescriptionInput = form.children[3]
+var taskNameInput = form.children[2].children[0];
+var taskTimeInput = form.children[3].children[0];
+var taskDescriptionInput = form.children[4]
     .children[0];
 var errorParagraph = document.getElementById('error');
 var tasksList = document.querySelector('.tasks-list');
