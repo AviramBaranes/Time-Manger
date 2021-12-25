@@ -306,6 +306,19 @@ button {
   color: white;
 }
 
+.task-finished-modal h2 {
+  color: #3e65e4;
+}
+.task-finished-modal p {
+  margin: 1.7rem 0rem;
+}
+.task-finished-modal button {
+  padding: 0.3rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: bold;
+  color: white;
+}
+
 i {
   pointer-events: none;
 }/*# sourceMappingURL=styles.css.map */

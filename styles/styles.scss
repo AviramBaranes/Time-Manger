@@ -311,6 +311,18 @@ button {
   }
 }
 
+.task-finished-modal {
+  h2 {
+    color: $primary-color;
+  }
+  p {
+    margin: 1.7rem 0rem;
+  }
+  button {
+    @include modal-button;
+  }
+}
+
 i {
   pointer-events: none;
 }
