@@ -23,6 +23,7 @@ var audio = new Audio('./assets/taskCompletedSound.ogg');
 var storageEvent = new CustomEvent('storageChanged');
 var ZERO_TIME = '00:00:00:00';
 (function () {
+    storageChangedHandler();
     for (var i = 0; i < localStorage.length; i++) {
         var taskName = localStorage.key(i);
         var progressTime = JSON.parse(localStorage.getItem(taskName)).progressTime;
@@ -145,7 +146,7 @@ function playBtnClickedHandler() {
             localStorage.setItem(taskName, updatedTaskData);
             window.dispatchEvent(storageEvent);
             currentListItem.setAttribute('data-interval', interval_1.toString());
-        }, 1);
+        }, 10);
     }
     else {
         var paragraphElement = currentListItem.children[0].children[1];
@@ -188,6 +189,10 @@ function submitFormHandler(e) {
     }
     if (!!localStorage.getItem(taskName)) {
         errorParagraph.innerText = 'Task already Exist';
+        return;
+    }
+    if (taskName.length > 15) {
+        errorParagraph.innerText = 'Task name needs to be under 15 characters';
         return;
     }
     var taskDataObj = {

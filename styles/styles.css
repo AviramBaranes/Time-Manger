@@ -27,7 +27,7 @@ body {
   margin-bottom: 2.2rem;
 }
 .title h1 {
-  font-size: 2.3rem;
+  font-size: 2.4rem;
   color: #e92222;
   margin-bottom: 0.6rem;
 }
@@ -41,18 +41,24 @@ body {
   display: flex;
   flex-direction: column;
 }
+.tasks-list li h4 {
+  color: #ff1900;
+}
 .tasks-list li p {
   font-size: 0.8rem;
+  width: 4.4rem;
 }
 
 .text-container,
 .buttons-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
+  flex-basis: 100%;
 }
 
 .buttons-container {
+  margin-top: 1rem;
   justify-content: center;
 }
 .buttons-container button {
@@ -118,6 +124,16 @@ body {
 
 #summarize {
   display: none;
+  margin: auto;
+  padding: 1rem 3rem;
+  color: #e92222;
+  border-radius: 1rem;
+}
+#summarize span {
+  color: black;
+}
+#summarize i {
+  font-size: 2rem;
 }
 
 i {

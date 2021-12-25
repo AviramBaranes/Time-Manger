@@ -33,6 +33,7 @@ const storageEvent = new CustomEvent('storageChanged');
 const ZERO_TIME = '00:00:00:00';
 
 (function () {
+  storageChangedHandler();
   for (let i = 0; i < localStorage.length; i++) {
     const taskName = localStorage.key(i)!;
     const { progressTime } = JSON.parse(
@@ -114,7 +115,6 @@ function deleteBtnClickedHandler(this: HTMLButtonElement) {
     deleteModal.style.display = 'none';
   });
 }
-
 function playBtnClickedHandler(this: HTMLButtonElement) {
   const currentListItem = this.parentElement!.parentElement!;
   if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
@@ -176,7 +176,7 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
       localStorage.setItem(taskName, updatedTaskData);
       window.dispatchEvent(storageEvent);
       currentListItem.setAttribute('data-interval', interval.toString());
-    }, 1);
+    }, 10);
   } else {
     const paragraphElement = currentListItem.children[0].children[1];
     const currentTime = paragraphElement.innerHTML;
@@ -228,6 +228,11 @@ function submitFormHandler(e: Event) {
 
   if (!!localStorage.getItem(taskName)) {
     errorParagraph.innerText = 'Task already Exist';
+    return;
+  }
+
+  if (taskName.length > 15) {
+    errorParagraph.innerText = 'Task name needs to be under 15 characters';
     return;
   }
 
