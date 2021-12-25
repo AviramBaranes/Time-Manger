@@ -237,6 +237,7 @@ function resetBtnClickedHandler(this: HTMLButtonElement) {
 }
 
 function backdropClickedHandler() {
+  formModal.style.display = 'none';
   taskFinishedModal.style.display = 'none';
   deleteModal.style.display = 'none';
   closeDetailModalBtnClickedHandler();

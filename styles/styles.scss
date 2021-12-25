@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap');
+@import 'breakpoint.scss';
 
 $primary-color: rgb(62, 101, 228);
 
@@ -51,7 +52,6 @@ button {
 
 .tasks-list {
   li {
-    display: flex;
     border: 2px solid $primary-color;
     margin-bottom: 1rem;
     padding: 0.75rem 1rem;
@@ -325,4 +325,35 @@ button {
 
 i {
   pointer-events: none;
+}
+
+@include media('>=bigPhone', '<tablet') {
+  .tasks-list {
+    li {
+      display: flex;
+      margin-bottom: 2rem;
+      padding: 1rem 1rem;
+      flex-direction: row;
+      h4 {
+        font-size: 1.2rem;
+      }
+      p {
+        width: 100%;
+        text-align: center;
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .text-container {
+    flex-direction: column;
+  }
+
+  .buttons-container {
+    margin: unset;
+    button {
+      font-size: 0.8rem;
+      padding: 0.45rem 0.6rem;
+    }
+  }
 }

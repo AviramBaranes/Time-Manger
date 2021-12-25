@@ -40,7 +40,6 @@ button {
 }
 
 .tasks-list li {
-  display: flex;
   border: 2px solid #3e65e4;
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
@@ -321,4 +320,33 @@ button {
 
 i {
   pointer-events: none;
+}
+
+@media (min-width: 440px) and (max-width: 767px) {
+  .tasks-list li {
+    display: flex;
+    margin-bottom: 2rem;
+    padding: 1rem 1rem;
+    flex-direction: row;
+  }
+  .tasks-list li h4 {
+    font-size: 1.2rem;
+  }
+  .tasks-list li p {
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .text-container {
+    flex-direction: column;
+  }
+
+  .buttons-container {
+    margin: unset;
+  }
+  .buttons-container button {
+    font-size: 0.8rem;
+    padding: 0.45rem 0.6rem;
+  }
 }/*# sourceMappingURL=styles.css.map */
