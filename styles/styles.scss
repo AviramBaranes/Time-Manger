@@ -2,6 +2,13 @@
 
 $primary-color: rgb(62, 101, 228);
 
+@mixin modal-button {
+  padding: 0.3rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: bold;
+  color: white;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -219,6 +226,56 @@ button {
 
 #error {
   color: red;
+}
+
+.deletion-modal {
+  h3 {
+    font-size: 0.9rem;
+    margin-bottom: 1.3rem;
+  }
+}
+
+.modal-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  button {
+    @include modal-button;
+  }
+}
+
+.success {
+  background-color: red;
+  border-color: red;
+}
+
+.danger {
+  background-color: $primary-color;
+  border-color: $primary-color;
+}
+
+.summarize-modal {
+  h3 {
+    margin: auto;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid $primary-color;
+    width: 6.5rem;
+  }
+  li {
+    text-align: left;
+    margin-bottom: 1rem;
+    h4 {
+      color: $primary-color;
+      margin-bottom: 0.6rem;
+    }
+    p {
+      font-size: 0.7rem;
+    }
+  }
+  button {
+    @include modal-button;
+    margin-top: 1rem;
+  }
 }
 
 #summarize {
