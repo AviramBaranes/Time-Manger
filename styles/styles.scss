@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&family=Roboto&display=swap');
 @import 'breakpoint.scss';
 
 $primary-color: rgb(62, 101, 228);
@@ -46,9 +46,11 @@ button {
 }
 
 .title {
+  margin-top: 1rem;
   text-align: center;
   margin-bottom: 2.2rem;
   h1 {
+    font-family: 'Roboto', sans-serif;
     font-size: 2.4rem;
     color: $primary-color;
     margin-bottom: 0.6rem;
@@ -231,7 +233,8 @@ button {
   }
 }
 
-#error {
+#error,
+#contact-error {
   color: red;
 }
 
@@ -331,6 +334,25 @@ button {
   }
 }
 
+.contact-modal {
+  button {
+    @include modal-button;
+    margin-top: 1rem;
+    padding: 0.6rem 2.5rem;
+  }
+}
+
+.message-modal {
+  h3,
+  p {
+    margin-bottom: 1rem;
+  }
+  button {
+    margin-top: 1rem;
+    @include modal-button;
+  }
+}
+
 i {
   pointer-events: none;
 }
@@ -409,7 +431,7 @@ footer {
     margin-bottom: 2rem;
     margin-top: 2rem;
     h1 {
-      font-size: 1.75rem;
+      font-size: 2rem;
     }
     p {
       font-size: 1rem;
@@ -534,6 +556,21 @@ footer {
       @include modal-button;
       margin-top: 1.5rem;
       padding: 0.5rem 1rem;
+    }
+  }
+
+  .message-modal {
+    h3,
+    p {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    h3 {
+      font-size: 1.4rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      @include modal-button;
     }
   }
 

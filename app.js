@@ -8,11 +8,17 @@ var taskFinishedModal = modals[2];
 var summarizeModal = modals[3];
 var detailModal = modals[4];
 var contactFormModal = modals[5];
+var messageModal = modals[6];
 var closeDetailModalBtn = detailModal.children[3];
 var approveBtn = deleteModal.children[1].children[0];
 var cancelBtn = deleteModal.children[1].children[1];
 var summarizeBtn = document.getElementById('summarize');
 var closeSummarizeBtn = summarizeModal.children[2];
+var contactForm = contactFormModal.children[1];
+var emailInput = contactForm.children[0].children[0];
+var contactEmailInput = contactForm.children[1]
+    .children[0];
+var contactFormSubmitBtn = contactFormModal.querySelector('button');
 var form = formModal.children[0];
 var taskNameInput = form.children[2].children[0];
 var taskTimeInput = form.children[3].children[0];
@@ -21,6 +27,9 @@ var taskDescriptionInput = form.children[4]
 var errorParagraph = document.getElementById('error');
 var tasksList = document.querySelector('.tasks-list');
 var tasksSummarizeList = document.querySelector('.tasks-summarize');
+var contactBtn = document.querySelector("li[name='contactBtn']");
+var contactFormParagraphError = contactFormModal.children[0];
+var closeContactMessageBtn = messageModal.children[2];
 var audio = new Audio('./assets/taskCompletedSound.ogg');
 var storageEvent = new CustomEvent('storageChanged');
 var ZERO_TIME = '00:00:00:00';
@@ -43,6 +52,11 @@ var ZERO_TIME = '00:00:00:00';
     closeSummarizeBtn.addEventListener('click', closeSummarizeBtnClickedHandler);
     closeDetailModalBtn.addEventListener('click', closeDetailModalBtnClickedHandler);
     backdrop.addEventListener('click', backdropClickedHandler);
+    contactBtn.addEventListener('click', contactBtnClickedHandler);
+    contactForm.addEventListener('submit', submitContactFormHandler);
+    emailInput.addEventListener('change', inputChangedHandler);
+    contactEmailInput.addEventListener('change', inputChangedHandler);
+    closeContactMessageBtn.addEventListener('click', closeContactMessageHandler);
 })();
 //eventListeners
 function addTaskHandler() {
@@ -80,12 +94,20 @@ function summarizeBtnClickedHandler() {
     summarizeModal.style.display = 'block';
     backdrop.style.display = 'block';
 }
+function contactBtnClickedHandler() {
+    contactFormModal.style.display = 'block';
+    backdrop.style.display = 'block';
+}
 function closeSummarizeBtnClickedHandler() {
     summarizeModal.style.display = 'none';
     backdrop.style.display = 'none';
     var listItems = Array.from(tasksSummarizeList.children);
     listItems.forEach(function (item) { return item.remove(); });
     summarizeBtn.disabled = false;
+}
+function closeContactMessageHandler() {
+    messageModal.style.display = 'none';
+    backdrop.style.display = 'none';
 }
 function deleteBtnClickedHandler() {
     var _this = this;
@@ -204,9 +226,7 @@ function resetBtnClickedHandler() {
     this.style.display = 'none';
 }
 function backdropClickedHandler() {
-    formModal.style.display = 'none';
-    taskFinishedModal.style.display = 'none';
-    deleteModal.style.display = 'none';
+    modals.forEach(function (modal) { return (modal.style.display = 'none'); });
     closeDetailModalBtnClickedHandler();
     closeSummarizeBtnClickedHandler();
 }
@@ -254,6 +274,40 @@ function submitFormHandler(e) {
     errorParagraph.innerText = '';
     formModal.style.display = 'none';
     backdrop.style.display = 'none';
+}
+function submitContactFormHandler(event) {
+    event.preventDefault();
+    var data = new FormData(event.target);
+    if (data.get('message').length < 5) {
+        contactFormParagraphError.innerHTML = 'Email message too short';
+        return;
+    }
+    fetch('https://formspree.io/f/xbjwlloo', {
+        method: 'POST',
+        body: data,
+        headers: {
+            Accept: 'application/json',
+        },
+    })
+        .then(function (response) {
+        if (response.status !== 200)
+            throw '';
+        contactFormModal.style.display = 'none';
+        messageModal.children[0].innerHTML = 'Thanks for the email!';
+        messageModal.children[1].innerHTML =
+            'Your email has been sent successfully';
+        messageModal.style.display = 'block';
+        contactFormParagraphError.innerHTML = '';
+        contactForm.reset();
+    })
+        .catch(function (_) {
+        contactFormModal.style.display = 'none';
+        messageModal.children[0].innerHTML = 'Oops...';
+        messageModal.children[1].innerHTML =
+            'Something went wrong please try again later';
+        messageModal.style.display = 'block';
+        contactFormParagraphError.innerHTML = '';
+    });
 }
 //create DOM elements
 function createListItem(taskName, progressTime) {

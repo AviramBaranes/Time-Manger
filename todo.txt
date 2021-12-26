@@ -1,8 +1,7 @@
-1. add contact functionality
-
-2. fix bugs
+1. fix bugs
     A- deleted task bag
     B- backdrop size
+    C- addBtn out of backdrop
 
 2. add animations
 

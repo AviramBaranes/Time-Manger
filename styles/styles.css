@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@500&family=Roboto&display=swap");
 * {
   padding: 0;
   margin: 0;
@@ -35,10 +35,12 @@ button {
 }
 
 .title {
+  margin-top: 1rem;
   text-align: center;
   margin-bottom: 2.2rem;
 }
 .title h1 {
+  font-family: "Roboto", sans-serif;
   font-size: 2.4rem;
   color: #3e65e4;
   margin-bottom: 0.6rem;
@@ -222,7 +224,8 @@ button {
   font-weight: bolder;
 }
 
-#error {
+#error,
+#contact-error {
   color: red;
 }
 
@@ -326,6 +329,27 @@ button {
   color: white;
 }
 
+.contact-modal button {
+  padding: 0.3rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: bold;
+  color: white;
+  margin-top: 1rem;
+  padding: 0.6rem 2.5rem;
+}
+
+.message-modal h3,
+.message-modal p {
+  margin-bottom: 1rem;
+}
+.message-modal button {
+  margin-top: 1rem;
+  padding: 0.3rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: bold;
+  color: white;
+}
+
 i {
   pointer-events: none;
 }
@@ -403,7 +427,7 @@ footer li {
     margin-top: 2rem;
   }
   .title h1 {
-    font-size: 1.75rem;
+    font-size: 2rem;
   }
   .title p {
     font-size: 1rem;
@@ -528,6 +552,22 @@ footer li {
     color: white;
     margin-top: 1.5rem;
     padding: 0.5rem 1rem;
+  }
+
+  .message-modal h3,
+.message-modal p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .message-modal h3 {
+    font-size: 1.4rem;
+  }
+  .message-modal button {
+    margin-top: 1.5rem;
+    padding: 0.3rem 1rem;
+    border-radius: 0.6rem;
+    font-weight: bold;
+    color: white;
   }
 
   footer ul {

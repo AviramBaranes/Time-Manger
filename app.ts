@@ -14,11 +14,17 @@ const taskFinishedModal = modals[2];
 const summarizeModal = modals[3];
 const detailModal = modals[4];
 const contactFormModal = modals[5];
+const messageModal = modals[6];
 const closeDetailModalBtn = detailModal.children[3] as HTMLButtonElement;
 const approveBtn = deleteModal.children[1].children[0];
 const cancelBtn = deleteModal.children[1].children[1];
 const summarizeBtn = document.getElementById('summarize') as HTMLButtonElement;
 const closeSummarizeBtn = summarizeModal.children[2];
+const contactForm = contactFormModal.children[1] as HTMLFormElement;
+const emailInput = contactForm.children[0].children[0] as HTMLInputElement;
+const contactEmailInput = contactForm.children[1]
+  .children[0] as HTMLInputElement;
+const contactFormSubmitBtn = contactFormModal.querySelector('button')!;
 const form = formModal.children[0] as HTMLFormElement;
 const taskNameInput = form.children[2].children[0] as HTMLInputElement;
 const taskTimeInput = form.children[3].children[0] as HTMLInputElement;
@@ -29,6 +35,11 @@ const tasksList = document.querySelector('.tasks-list') as HTMLUListElement;
 const tasksSummarizeList = document.querySelector(
   '.tasks-summarize'
 ) as HTMLUListElement;
+const contactBtn = document.querySelector(
+  "li[name='contactBtn']"
+) as HTMLLIElement;
+const contactFormParagraphError = contactFormModal.children[0]!;
+const closeContactMessageBtn = messageModal.children[2] as HTMLButtonElement;
 
 const audio = new Audio('./assets/taskCompletedSound.ogg');
 const storageEvent = new CustomEvent('storageChanged');
@@ -58,6 +69,11 @@ const ZERO_TIME = '00:00:00:00';
     closeDetailModalBtnClickedHandler
   );
   backdrop.addEventListener('click', backdropClickedHandler);
+  contactBtn.addEventListener('click', contactBtnClickedHandler);
+  contactForm.addEventListener('submit', submitContactFormHandler);
+  emailInput.addEventListener('change', inputChangedHandler);
+  contactEmailInput.addEventListener('change', inputChangedHandler);
+  closeContactMessageBtn.addEventListener('click', closeContactMessageHandler);
 })();
 
 //eventListeners
@@ -104,12 +120,22 @@ function summarizeBtnClickedHandler(this: HTMLButtonElement) {
   backdrop.style.display = 'block';
 }
 
+function contactBtnClickedHandler() {
+  contactFormModal.style.display = 'block';
+  backdrop.style.display = 'block';
+}
+
 function closeSummarizeBtnClickedHandler() {
   summarizeModal.style.display = 'none';
   backdrop.style.display = 'none';
   const listItems = Array.from(tasksSummarizeList.children);
   listItems.forEach((item) => item.remove());
   summarizeBtn.disabled = false;
+}
+
+function closeContactMessageHandler() {
+  messageModal.style.display = 'none';
+  backdrop.style.display = 'none';
 }
 
 function deleteBtnClickedHandler(this: HTMLButtonElement) {
@@ -241,9 +267,7 @@ function resetBtnClickedHandler(this: HTMLButtonElement) {
 }
 
 function backdropClickedHandler() {
-  formModal.style.display = 'none';
-  taskFinishedModal.style.display = 'none';
-  deleteModal.style.display = 'none';
+  modals.forEach((modal) => (modal.style.display = 'none'));
   closeDetailModalBtnClickedHandler();
   closeSummarizeBtnClickedHandler();
 }
@@ -297,6 +321,43 @@ function submitFormHandler(e: Event) {
   errorParagraph.innerText = '';
   formModal.style.display = 'none';
   backdrop.style.display = 'none';
+}
+
+function submitContactFormHandler(event: SubmitEvent) {
+  event.preventDefault();
+
+  const data = new FormData(event.target as HTMLFormElement);
+
+  if ((data.get('message') as string).length < 5) {
+    contactFormParagraphError.innerHTML = 'Email message too short';
+    return;
+  }
+
+  fetch('https://formspree.io/f/xbjwlloo', {
+    method: 'POST',
+    body: data,
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+    .then((response) => {
+      if (response.status !== 200) throw '';
+      contactFormModal.style.display = 'none';
+      messageModal.children[0].innerHTML = 'Thanks for the email!';
+      messageModal.children[1].innerHTML =
+        'Your email has been sent successfully';
+      messageModal.style.display = 'block';
+      contactFormParagraphError.innerHTML = '';
+      contactForm.reset();
+    })
+    .catch((_) => {
+      contactFormModal.style.display = 'none';
+      messageModal.children[0].innerHTML = 'Oops...';
+      messageModal.children[1].innerHTML =
+        'Something went wrong please try again later';
+      messageModal.style.display = 'block';
+      contactFormParagraphError.innerHTML = '';
+    });
 }
 
 //create DOM elements
