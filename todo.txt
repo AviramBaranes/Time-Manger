@@ -1,9 +1,8 @@
 1. add contact functionality
 
 2. fix bugs
-    A- error erased after submit
-    B- label classes are reset after submit
-    C- deleted task bag
+    A- deleted task bag
+    B- backdrop size
 
 2. add animations
 

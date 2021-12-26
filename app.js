@@ -245,8 +245,13 @@ function submitFormHandler(e) {
     window.dispatchEvent(storageEvent);
     var newListItem = createListItem(taskName);
     tasksList.appendChild(newListItem);
+    taskNameInput.nextElementSibling.className = '';
+    taskTimeInput.nextElementSibling.className = '';
+    taskDescriptionInput.className = '';
     taskNameInput.value = '';
     taskTimeInput.value = '';
+    taskDescriptionInput.value = '';
+    errorParagraph.innerText = '';
     formModal.style.display = 'none';
     backdrop.style.display = 'none';
 }

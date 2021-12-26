@@ -275,7 +275,6 @@ function submitFormHandler(e: Event) {
     errorParagraph.innerText = 'Task name needs to be under 15 characters';
     return;
   }
-
   const taskDataObj: TaskDataType = {
     goalTime: taskTime,
     progressTime: ZERO_TIME,
@@ -289,8 +288,13 @@ function submitFormHandler(e: Event) {
   window.dispatchEvent(storageEvent);
   const newListItem = createListItem(taskName);
   tasksList.appendChild(newListItem);
+  taskNameInput.nextElementSibling!.className = '';
+  taskTimeInput.nextElementSibling!.className = '';
+  taskDescriptionInput!.className = '';
   taskNameInput.value = '';
   taskTimeInput.value = '';
+  taskDescriptionInput.value = '';
+  errorParagraph.innerText = '';
   formModal.style.display = 'none';
   backdrop.style.display = 'none';
 }
