@@ -166,6 +166,7 @@ button {
       color: $primary-color;
     }
     button {
+      color: white;
       padding: 0.6rem 2rem;
       font-size: 1.3rem;
       border-radius: 1rem;
@@ -304,7 +305,6 @@ button {
   p {
     margin: 1.7rem 0rem;
     font-size: 0.8rem;
-    text-align: left;
   }
   button {
     @include modal-button;
@@ -328,11 +328,14 @@ i {
 }
 
 @include media('>=bigPhone', '<tablet') {
+  .title {
+    margin-bottom: 3rem;
+  }
   .tasks-list {
     li {
       display: flex;
       margin-bottom: 2rem;
-      padding: 1rem 1rem;
+      padding: 1.7rem 1rem;
       flex-direction: row;
       h4 {
         font-size: 1.2rem;
@@ -354,6 +357,135 @@ i {
     button {
       font-size: 0.8rem;
       padding: 0.45rem 0.6rem;
+    }
+  }
+}
+
+@include media('<desktop', '>=tablet') {
+  .title {
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+    h1 {
+      font-size: 2.75rem;
+    }
+    p {
+      font-size: 1rem;
+    }
+  }
+  .tasks-list {
+    li {
+      width: 80%;
+      margin: auto;
+      display: flex;
+      margin-bottom: 2.3rem;
+      padding: 1.5rem 0rem;
+      flex-direction: row;
+      h4 {
+        font-size: 1.4rem;
+      }
+      p {
+        width: 100%;
+        text-align: center;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .text-container {
+    flex-direction: column;
+    justify-content: space-around;
+    h4 {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .buttons-container {
+    margin: unset;
+    button {
+      font-size: 1rem;
+      padding: 0.4rem 0.7rem;
+    }
+  }
+
+  #addBtn {
+    padding: 0.55rem 2.6rem;
+    margin: 2rem;
+    font-size: 1.4rem;
+  }
+
+  .form-modal {
+    form {
+      width: 70%;
+      margin: auto;
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+    }
+    .input-container {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .deletion-modal {
+    h3 {
+      font-size: 1.4rem;
+      margin-bottom: 3rem;
+    }
+  }
+  .modal-buttons {
+    button {
+      @include modal-button;
+      padding: 0.6rem 2rem;
+    }
+  }
+
+  .summarize-modal {
+    h3 {
+      font-size: 1.6rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid $primary-color;
+      width: 8.2rem;
+    }
+    li {
+      width: 80%;
+      margin: auto;
+      margin-bottom: 1.2rem;
+      h4 {
+        font-size: 1.2rem;
+      }
+      p {
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  .detail-modal {
+    h3 {
+      margin-bottom: 0.8rem;
+      font-size: 1.6rem;
+    }
+    time {
+      font-size: 1rem;
+    }
+    p {
+      width: 65%;
+      margin: 2rem auto;
+      font-size: 1rem;
+    }
+  }
+  .task-finished-modal {
+    h2 {
+      color: $primary-color;
+      font-size: 2rem;
+    }
+    p {
+      margin: 1.7rem 0rem;
+    }
+    button {
+      @include modal-button;
+      margin-top: 1.5rem;
+      padding: 0.5rem 1rem;
     }
   }
 }
