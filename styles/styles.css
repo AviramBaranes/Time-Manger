@@ -5,17 +5,23 @@
   box-sizing: border-box;
 }
 
-html {
-  height: 100vh;
+html,
+body {
+  font-family: "Quicksand", sans-serif;
+  min-height: 100vh;
 }
 
 body {
-  font-family: "Quicksand", sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: start;
 }
 body main,
 body header {
   width: 80%;
-  margin: auto;
+  margin: 0rem auto;
 }
 
 ul {
@@ -277,6 +283,7 @@ button {
 #summarize {
   display: none;
   margin: auto;
+  margin-bottom: 1.7rem;
   padding: 1rem 3rem;
   color: #3e65e4;
   border-radius: 1rem;
@@ -324,6 +331,30 @@ i {
   pointer-events: none;
 }
 
+footer {
+  padding: 2rem;
+  margin-top: auto;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+footer ul {
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+footer li {
+  cursor: pointer;
+  font-size: 1.4rem;
+}
+
+.fa-github,
+.fa-envelope,
+.fa-linkedin {
+  color: #3e65e4;
+}
+
 @media (min-width: 440px) and (max-width: 767px) {
   .title {
     margin-bottom: 3rem;
@@ -355,14 +386,18 @@ i {
     font-size: 0.8rem;
     padding: 0.45rem 0.6rem;
   }
+
+  footer li {
+    font-size: 2rem;
+  }
 }
 @media (min-width: 768px) {
   .title {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     margin-top: 2rem;
   }
   .title h1 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
   .title p {
     font-size: 1rem;
@@ -377,7 +412,7 @@ i {
     width: 65%;
     margin: auto;
     display: flex;
-    margin-bottom: 2.3rem;
+    margin-bottom: 2rem;
     padding: 1.5rem 0rem;
     flex-direction: row;
   }
@@ -408,7 +443,6 @@ i {
 
   #addBtn {
     padding: 0.5rem 2.4rem;
-    margin: 2rem;
     font-size: 1.2rem;
   }
 
@@ -488,5 +522,12 @@ i {
     color: white;
     margin-top: 1.5rem;
     padding: 0.5rem 1rem;
+  }
+
+  footer ul {
+    width: 35%;
+  }
+  footer li {
+    font-size: 2.5rem;
   }
 }/*# sourceMappingURL=styles.css.map */

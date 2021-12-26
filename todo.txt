@@ -1,7 +1,5 @@
-1. add styles
+1. add animations
 
-2. add animations
+2. add footer
 
-3. add footer
-
-4. deploy
+3. deploy

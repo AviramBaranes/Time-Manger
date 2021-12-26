@@ -7,6 +7,7 @@ var deleteModal = modals[1];
 var taskFinishedModal = modals[2];
 var summarizeModal = modals[3];
 var detailModal = modals[4];
+var contactFormModal = modals[5];
 var closeDetailModalBtn = detailModal.children[3];
 var approveBtn = deleteModal.children[1].children[0];
 var cancelBtn = deleteModal.children[1].children[1];

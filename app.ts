@@ -13,6 +13,7 @@ const deleteModal = modals[1];
 const taskFinishedModal = modals[2];
 const summarizeModal = modals[3];
 const detailModal = modals[4];
+const contactFormModal = modals[5];
 const closeDetailModalBtn = detailModal.children[3] as HTMLButtonElement;
 const approveBtn = deleteModal.children[1].children[0];
 const cancelBtn = deleteModal.children[1].children[1];
