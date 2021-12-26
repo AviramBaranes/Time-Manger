@@ -140,10 +140,14 @@ function playBtnClickedHandler() {
             var taskName = currentListItem.children[0].children[0].innerHTML;
             var _b = JSON.parse(localStorage.getItem(taskName)), goalTime = _b.goalTime, description = _b.description;
             var _c = goalTime.split(':'), hoursGoal = _c[0], minutesGoal = _c[1];
-            if (hoursGoal === newTime[0] &&
-                minutesGoal === newTime[1] &&
-                newTime[2] === '00' &&
-                newTime[3] === '00') {
+            var temp = 1;
+            if (temp == 1
+            // hoursGoal === newTime[0] &&
+            // minutesGoal === newTime[1] &&
+            // newTime[2] === '00' &&
+            // newTime[3] === '00'
+            ) {
+                temp++;
                 audio.play();
                 taskFinishedModal.children[1].innerHTML = "You finished the task: " + taskName;
                 taskFinishedModal.style.display = 'block';

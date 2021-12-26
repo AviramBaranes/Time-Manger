@@ -106,6 +106,7 @@ button {
   i {
     position: absolute;
     right: 17.5px;
+    top: 27.5%;
     display: none;
     animation: showIcon 340ms ease-out;
   }
@@ -233,6 +234,7 @@ button {
   h3 {
     font-size: 0.9rem;
     margin-bottom: 1.3rem;
+    font-weight: lighter;
   }
 }
 
@@ -361,32 +363,36 @@ i {
   }
 }
 
-@include media('<desktop', '>=tablet') {
+@include media('>=tablet') {
   .title {
     margin-bottom: 3rem;
-    margin-top: 3rem;
+    margin-top: 2rem;
     h1 {
-      font-size: 2.75rem;
+      font-size: 1.5rem;
     }
     p {
       font-size: 1rem;
     }
   }
+  .modal {
+    top: 10%;
+    width: 50%;
+  }
   .tasks-list {
     li {
-      width: 80%;
+      width: 65%;
       margin: auto;
       display: flex;
       margin-bottom: 2.3rem;
       padding: 1.5rem 0rem;
       flex-direction: row;
       h4 {
-        font-size: 1.4rem;
+        font-size: 1rem;
       }
       p {
         width: 100%;
         text-align: center;
-        font-size: 1.1rem;
+        font-size: 0.8rem;
       }
     }
   }
@@ -402,23 +408,24 @@ i {
   .buttons-container {
     margin: unset;
     button {
-      font-size: 1rem;
+      font-size: 0.7rem;
       padding: 0.4rem 0.7rem;
     }
   }
 
   #addBtn {
-    padding: 0.55rem 2.6rem;
+    padding: 0.5rem 2.4rem;
     margin: 2rem;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
 
   .form-modal {
+    top: 5%;
     form {
-      width: 70%;
+      width: 60%;
       margin: auto;
       h2 {
-        font-size: 2rem;
+        font-size: 1.7rem;
         margin-bottom: 2rem;
       }
     }
@@ -429,8 +436,8 @@ i {
 
   .deletion-modal {
     h3 {
-      font-size: 1.4rem;
-      margin-bottom: 3rem;
+      font-size: 1.2rem;
+      margin-bottom: 4rem;
     }
   }
   .modal-buttons {
@@ -441,10 +448,11 @@ i {
   }
 
   .summarize-modal {
+    width: 35%;
     h3 {
       font-size: 1.6rem;
-      margin-bottom: 1.2rem;
-      border-bottom: 1px solid $primary-color;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid $primary-color;
       width: 8.2rem;
     }
     li {

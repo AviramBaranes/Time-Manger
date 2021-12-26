@@ -168,12 +168,15 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
       ) as TaskDataType;
 
       const [hoursGoal, minutesGoal] = goalTime.split(':');
+      let temp = 1;
       if (
-        hoursGoal === newTime[0] &&
-        minutesGoal === newTime[1] &&
-        newTime[2] === '00' &&
-        newTime[3] === '00'
+        temp == 1
+        // hoursGoal === newTime[0] &&
+        // minutesGoal === newTime[1] &&
+        // newTime[2] === '00' &&
+        // newTime[3] === '00'
       ) {
+        temp++;
         audio.play();
         taskFinishedModal.children[1].innerHTML = `You finished the task: ${taskName}`;
         taskFinishedModal.style.display = 'block';
