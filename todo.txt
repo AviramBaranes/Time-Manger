@@ -1,5 +1,10 @@
-1. add animations
+1. add contact functionality
 
-2. add footer
+2. fix bugs
+    A- error erased after submit
+    B- label classes are reset after submit
+    C- deleted task bag
+
+2. add animations
 
 3. deploy

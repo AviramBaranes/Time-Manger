@@ -39,7 +39,6 @@ button {
   margin-bottom: 2.2rem;
 }
 .title h1 {
-  margin-top: 2rem;
   font-size: 2.4rem;
   color: #3e65e4;
   margin-bottom: 0.6rem;
@@ -337,6 +336,13 @@ footer {
   display: grid;
   place-items: center;
   text-align: center;
+}
+footer::before {
+  content: "";
+  height: 1px;
+  width: 80%;
+  background-color: black;
+  margin-bottom: 3rem;
 }
 footer ul {
   width: 80%;

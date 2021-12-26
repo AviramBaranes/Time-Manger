@@ -49,7 +49,6 @@ button {
   text-align: center;
   margin-bottom: 2.2rem;
   h1 {
-    margin-top: 2rem;
     font-size: 2.4rem;
     color: $primary-color;
     margin-bottom: 0.6rem;
@@ -337,6 +336,13 @@ i {
 }
 
 footer {
+  &::before {
+    content: '';
+    height: 1px;
+    width: 80%;
+    background-color: black;
+    margin-bottom: 3rem;
+  }
   padding: 2rem;
   margin-top: auto;
   display: grid;
