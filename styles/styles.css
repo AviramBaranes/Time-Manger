@@ -17,6 +17,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-self: start;
+  position: relative;
 }
 body main,
 body header {
@@ -139,12 +140,12 @@ button {
 .backdrop {
   display: none;
   position: absolute;
-  height: 100vh;
-  width: 100vw;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  height: 100%;
+  min-width: 100%;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
   background-color: rgba(0, 0, 0, 0.446);
 }
 
@@ -183,6 +184,9 @@ button {
   flex-direction: column;
   width: 100%;
   margin: 1rem auto;
+}
+.input-container input[type=time] {
+  width: 100%;
 }
 .input-container .active {
   transform: translate(0, 5px) scale(0.8);
@@ -329,6 +333,9 @@ button {
   color: white;
 }
 
+.contact-modal h2 {
+  margin-bottom: 2rem;
+}
 .contact-modal button {
   padding: 0.3rem 1rem;
   border-radius: 0.6rem;
@@ -476,18 +483,22 @@ footer li {
     font-size: 1.2rem;
   }
 
-  .form-modal {
+  .form-modal,
+.contact-modal {
     top: 5%;
   }
-  .form-modal form {
+  .form-modal form,
+.contact-modal form {
     width: 60%;
     margin: auto;
   }
-  .form-modal form h2 {
+  .form-modal form h2,
+.contact-modal form h2 {
     font-size: 1.7rem;
     margin-bottom: 2rem;
   }
-  .form-modal .input-container {
+  .form-modal .input-container,
+.contact-modal .input-container {
     margin-bottom: 2rem;
   }
 

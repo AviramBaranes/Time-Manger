@@ -14,7 +14,7 @@ var approveBtn = deleteModal.children[1].children[0];
 var cancelBtn = deleteModal.children[1].children[1];
 var summarizeBtn = document.getElementById('summarize');
 var closeSummarizeBtn = summarizeModal.children[2];
-var contactForm = contactFormModal.children[1];
+var contactForm = contactFormModal.children[2];
 var emailInput = contactForm.children[0].children[0];
 var contactEmailInput = contactForm.children[1]
     .children[0];

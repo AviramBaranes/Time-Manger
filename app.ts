@@ -20,7 +20,7 @@ const approveBtn = deleteModal.children[1].children[0];
 const cancelBtn = deleteModal.children[1].children[1];
 const summarizeBtn = document.getElementById('summarize') as HTMLButtonElement;
 const closeSummarizeBtn = summarizeModal.children[2];
-const contactForm = contactFormModal.children[1] as HTMLFormElement;
+const contactForm = contactFormModal.children[2] as HTMLFormElement;
 const emailInput = contactForm.children[0].children[0] as HTMLInputElement;
 const contactEmailInput = contactForm.children[1]
   .children[0] as HTMLInputElement;
