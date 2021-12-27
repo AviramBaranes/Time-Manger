@@ -1,4 +1,64 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@500&family=Roboto&display=swap");
+@-webkit-keyframes slide-down {
+  from {
+    transform: translate(-50%, -100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0%);
+    opacity: 1;
+  }
+}
+@keyframes slide-down {
+  from {
+    transform: translate(-50%, -100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0%);
+    opacity: 1;
+  }
+}
+@-webkit-keyframes showIcon {
+  from {
+    right: -20px;
+    opacity: 0;
+  }
+  to {
+    right: 17.5px;
+    opacity: 1;
+  }
+}
+@keyframes showIcon {
+  from {
+    right: -20px;
+    opacity: 0;
+  }
+  to {
+    right: 17.5px;
+    opacity: 1;
+  }
+}
+@-webkit-keyframes slide-right {
+  from {
+    transform: translate(-50%, 0%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+}
+@keyframes slide-right {
+  from {
+    transform: translate(-50%, 0%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+}
 * {
   padding: 0;
   margin: 0;
@@ -48,6 +108,9 @@ button {
 }
 
 .tasks-list li {
+  -webkit-animation: slide-right 0.5s ease-in-out;
+          animation: slide-right 0.5s ease-in-out;
+  cursor: pointer;
   border: 2px solid #3e65e4;
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
@@ -55,12 +118,51 @@ button {
   display: flex;
   flex-direction: column;
 }
+.tasks-list li:nth-child(1) {
+  -webkit-animation-duration: 0.4s;
+          animation-duration: 0.4s;
+}
+.tasks-list li:nth-child(2) {
+  -webkit-animation-duration: 0.45s;
+          animation-duration: 0.45s;
+}
+.tasks-list li:nth-child(3) {
+  -webkit-animation-duration: 0.5s;
+          animation-duration: 0.5s;
+}
+.tasks-list li:nth-child(4) {
+  -webkit-animation-duration: 0.55s;
+          animation-duration: 0.55s;
+}
+.tasks-list li:nth-child(5) {
+  -webkit-animation-duration: 0.65s;
+          animation-duration: 0.65s;
+}
+.tasks-list li:nth-child(6) {
+  -webkit-animation-duration: 0.7s;
+          animation-duration: 0.7s;
+}
 .tasks-list li h4 {
   color: #3e65e4;
 }
 .tasks-list li p {
   font-size: 0.8rem;
   width: 4.4rem;
+}
+
+.task-button {
+  transition: transform 0.15s ease-in-out;
+}
+.task-button:hover {
+  transform: scale(1.2);
+  color: white;
+  background-color: #3e65e4;
+}
+
+.delete-btn:hover {
+  background-color: white;
+  color: white !important;
+  border: 2px red solid;
 }
 
 .fa-trash-alt {
@@ -113,28 +215,26 @@ button {
 #addBtn:hover i {
   display: inline;
 }
-#addBtn:disabled {
-  cursor: not-allowed;
+
+#summarize {
+  display: none;
+  margin: auto;
+  margin-bottom: 1.7rem;
+  padding: 1rem 3rem;
+  color: #3e65e4;
+  border-radius: 1rem;
+  transition: transform 0.3s ease-in-out;
 }
-@-webkit-keyframes showIcon {
-  from {
-    right: -20px;
-    opacity: 0;
-  }
-  to {
-    right: 17.5px;
-    opacity: 1;
-  }
+#summarize span {
+  color: black;
 }
-@keyframes showIcon {
-  from {
-    right: -20px;
-    opacity: 0;
-  }
-  to {
-    right: 17.5px;
-    opacity: 1;
-  }
+#summarize i {
+  font-size: 2rem;
+}
+#summarize:hover {
+  transform: scale(1.075);
+  background-color: #3e65e4;
+  color: black;
 }
 
 .backdrop {
@@ -162,6 +262,8 @@ button {
   left: 50%;
   top: 15%;
   transform: translateX(-50%);
+  -webkit-animation: slide-down 0.3s ease-out;
+          animation: slide-down 0.3s ease-out;
 }
 
 .form-modal form {
@@ -284,21 +386,6 @@ button {
   font-weight: bold;
   color: white;
   margin-top: 1rem;
-}
-
-#summarize {
-  display: none;
-  margin: auto;
-  margin-bottom: 1.7rem;
-  padding: 1rem 3rem;
-  color: #3e65e4;
-  border-radius: 1rem;
-}
-#summarize span {
-  color: black;
-}
-#summarize i {
-  font-size: 2rem;
 }
 
 .detail-modal h3 {
@@ -434,10 +521,10 @@ footer li {
     margin-top: 2rem;
   }
   .title h1 {
-    font-size: 2rem;
+    font-size: 2.4rem;
   }
   .title p {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   .modal {
@@ -450,16 +537,16 @@ footer li {
     margin: auto;
     display: flex;
     margin-bottom: 2rem;
-    padding: 1.5rem 0rem;
+    padding: 1.75rem 0rem;
     flex-direction: row;
   }
   .tasks-list li h4 {
-    font-size: 1rem;
+    font-size: 1.4rem;
   }
   .tasks-list li p {
     width: 100%;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 
   .text-container {
@@ -474,8 +561,8 @@ footer li {
     margin: unset;
   }
   .buttons-container button {
-    font-size: 0.7rem;
-    padding: 0.4rem 0.7rem;
+    font-size: 0.9rem;
+    padding: 0.7rem 0.9rem;
   }
 
   #addBtn {

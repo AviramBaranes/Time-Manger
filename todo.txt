@@ -1,7 +1,0 @@
-1. fix bugs
-    A- deleted task bug
-    B- addBtn out of backdrop
-
-2. add animations
-
-3. deploy

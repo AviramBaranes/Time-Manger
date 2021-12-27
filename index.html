@@ -16,7 +16,7 @@
   <body>
     <header class="title">
       <h1>Time Manager</h1>
-      <p>Track your time investments of your tasks</p>
+      <p>Track your tasks time investments</p>
     </header>
     <div class="backdrop"></div>
     <main>
@@ -30,8 +30,8 @@
               <label for="taskName">task</label>
             </div>
             <div class="input-container">
-              <input type="time" id="time" max="05:00" min="00:10" required />
-              <label for="time">time</label>
+              <input type="time" value="00:10" id="time" max="05:00" min="00:10" required />
+              <label class="active" for="time">time</label>
             </div>
             <div class="input-container">
               <textarea
@@ -96,14 +96,14 @@
         <div class="buttons">
           <button id="addBtn">Add Task <i class="fas fa-plus"></i></button>
           <button id="summarize">
-            <i class="fas fa-clipboard"></i><br /><span> summary </span>
+              <i class="fas fa-clipboard"></i><br /><span > summary </span>
           </button>
         </div>
       </section>
     </main>
     <footer>
       <ul>
-        <li name='contactBtn' ><i class="fas fa-envelope"></i></i></li>
+        <li id='contactBtn' ><i class="fas fa-envelope"></i></i></li>
         <li>
           <a href="https://www.linkedin.com/in/aviram-baranes/"
           target="_blank"  ><i class="fab fa-linkedin"></i> </a

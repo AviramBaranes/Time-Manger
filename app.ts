@@ -3,8 +3,8 @@ interface TaskDataType {
   progressTime: string;
   description?: string;
 }
-const addTaskBtn = document.getElementById('addBtn') as HTMLButtonElement;
-const backdrop = document.querySelector('.backdrop') as HTMLDivElement;
+
+//Modals
 const modals = document.querySelectorAll(
   '.modal'
 ) as NodeListOf<HTMLDivElement>;
@@ -15,32 +15,43 @@ const summarizeModal = modals[3];
 const detailModal = modals[4];
 const contactFormModal = modals[5];
 const messageModal = modals[6];
+
+//Buttons
+//open-buttons:
+const addTaskBtn = document.getElementById('addBtn') as HTMLButtonElement;
+const summarizeBtn = document.getElementById('summarize') as HTMLButtonElement;
+const contactBtn = document.getElementById('contactBtn') as HTMLLIElement;
+//close-buttons:
 const closeDetailModalBtn = detailModal.children[3] as HTMLButtonElement;
 const approveBtn = deleteModal.children[1].children[0];
 const cancelBtn = deleteModal.children[1].children[1];
-const summarizeBtn = document.getElementById('summarize') as HTMLButtonElement;
 const closeSummarizeBtn = summarizeModal.children[2];
+const contactFormSubmitBtn = contactFormModal.querySelector('button')!;
+const closeContactMessageBtn = messageModal.children[2] as HTMLButtonElement;
+
+//Forms
+const form = formModal.children[0] as HTMLFormElement;
 const contactForm = contactFormModal.children[2] as HTMLFormElement;
+
+//Inputs
 const emailInput = contactForm.children[0].children[0] as HTMLInputElement;
 const contactEmailInput = contactForm.children[1]
   .children[0] as HTMLInputElement;
-const contactFormSubmitBtn = contactFormModal.querySelector('button')!;
-const form = formModal.children[0] as HTMLFormElement;
 const taskNameInput = form.children[2].children[0] as HTMLInputElement;
 const taskTimeInput = form.children[3].children[0] as HTMLInputElement;
 const taskDescriptionInput = form.children[4]
   .children[0] as HTMLTextAreaElement;
+
+//Other DOM elements
+const contactFormParagraphError = contactFormModal.children[0]!;
 const errorParagraph = document.getElementById('error') as HTMLParagraphElement;
 const tasksList = document.querySelector('.tasks-list') as HTMLUListElement;
 const tasksSummarizeList = document.querySelector(
   '.tasks-summarize'
 ) as HTMLUListElement;
-const contactBtn = document.querySelector(
-  "li[name='contactBtn']"
-) as HTMLLIElement;
-const contactFormParagraphError = contactFormModal.children[0]!;
-const closeContactMessageBtn = messageModal.children[2] as HTMLButtonElement;
+const backdrop = document.querySelector('.backdrop') as HTMLDivElement;
 
+//Not a DOM elements
 const audio = new Audio('./assets/taskCompletedSound.ogg');
 const storageEvent = new CustomEvent('storageChanged');
 const ZERO_TIME = '00:00:00:00';
@@ -78,7 +89,8 @@ const ZERO_TIME = '00:00:00:00';
 
 //eventListeners
 
-function addTaskHandler() {
+function addTaskHandler(this: HTMLButtonElement) {
+  this.classList.remove('hover');
   formModal.style.display = 'block';
   backdrop.style.display = 'block';
 }
@@ -195,15 +207,12 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
       ) as TaskDataType;
 
       const [hoursGoal, minutesGoal] = goalTime.split(':');
-      let temp = 1;
       if (
-        temp == 1
-        // hoursGoal === newTime[0] &&
-        // minutesGoal === newTime[1] &&
-        // newTime[2] === '00' &&
-        // newTime[3] === '00'
+        hoursGoal === newTime[0] &&
+        minutesGoal === newTime[1] &&
+        newTime[2] === '00' &&
+        newTime[3] === '00'
       ) {
-        temp++;
         audio.play();
         taskFinishedModal.children[1].innerHTML = `You finished the task: ${taskName}`;
         taskFinishedModal.style.display = 'block';
@@ -313,10 +322,9 @@ function submitFormHandler(e: Event) {
   const newListItem = createListItem(taskName);
   tasksList.appendChild(newListItem);
   taskNameInput.nextElementSibling!.className = '';
-  taskTimeInput.nextElementSibling!.className = '';
   taskDescriptionInput!.className = '';
   taskNameInput.value = '';
-  taskTimeInput.value = '';
+  taskTimeInput.value = '00:10';
   taskDescriptionInput.value = '';
   errorParagraph.innerText = '';
   formModal.style.display = 'none';
@@ -377,6 +385,9 @@ function createListItem(taskName: string, progressTime?: string) {
   playBtn.innerHTML = '<i class="fas fa-play"></i>';
   deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
   resetBtn.innerHTML = '<i class="fas fa-redo-alt"></i>';
+  playBtn.className = 'task-button';
+  deleteBtn.className = 'task-button delete-btn';
+  resetBtn.className = 'task-button';
   if (!progressTime || progressTime === ZERO_TIME)
     resetBtn.style.display = 'none';
   playBtn.addEventListener('click', playBtnClickedHandler);

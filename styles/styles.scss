@@ -10,6 +10,41 @@ $primary-color: rgb(62, 101, 228);
   color: white;
 }
 
+@keyframes slide-down {
+  from {
+    transform: translate(-50%, -100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0%);
+    opacity: 1;
+  }
+}
+
+@keyframes showIcon {
+  from {
+    right: -20px;
+    opacity: 0;
+  }
+
+  to {
+    right: 17.5px;
+    opacity: 1;
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translate(-50%, 0%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -60,6 +95,26 @@ button {
 
 .tasks-list {
   li {
+    &:nth-child(1) {
+      animation-duration: 0.4s;
+    }
+    &:nth-child(2) {
+      animation-duration: 0.45s;
+    }
+    &:nth-child(3) {
+      animation-duration: 0.5s;
+    }
+    &:nth-child(4) {
+      animation-duration: 0.55s;
+    }
+    &:nth-child(5) {
+      animation-duration: 0.65s;
+    }
+    &:nth-child(6) {
+      animation-duration: 0.7s;
+    }
+    animation: slide-right 0.5s ease-in-out;
+    cursor: pointer;
     border: 2px solid $primary-color;
     margin-bottom: 1rem;
     padding: 0.75rem 1rem;
@@ -73,6 +128,23 @@ button {
       font-size: 0.8rem;
       width: 4.4rem;
     }
+  }
+}
+
+.task-button {
+  transition: transform 0.15s ease-in-out;
+  &:hover {
+    transform: scale(1.2);
+    color: white;
+    background-color: $primary-color;
+  }
+}
+
+.delete-btn {
+  &:hover {
+    background-color: white;
+    color: white !important;
+    border: 2px red solid;
   }
 }
 
@@ -125,23 +197,29 @@ button {
       display: inline;
     }
   }
+}
 
-  &:disabled {
-    cursor: not-allowed;
+#summarize {
+  display: none;
+  margin: auto;
+  margin-bottom: 1.7rem;
+  padding: 1rem 3rem;
+  color: $primary-color;
+  border-radius: 1rem;
+  span {
+    color: black;
   }
-
-  @keyframes showIcon {
-    from {
-      right: -20px;
-      opacity: 0;
-    }
-
-    to {
-      right: 17.5px;
-      opacity: 1;
-    }
+  i {
+    font-size: 2rem;
+  }
+  transition: transform 0.3s ease-in-out;
+  &:hover {
+    transform: scale(1.075);
+    background-color: $primary-color;
+    color: black;
   }
 }
+
 .backdrop {
   display: none;
   position: absolute;
@@ -166,6 +244,7 @@ button {
   left: 50%;
   top: 15%;
   transform: translateX(-50%);
+  animation: slide-down 0.3s ease-out;
 }
 
 .form-modal {
@@ -291,21 +370,6 @@ button {
   button {
     @include modal-button;
     margin-top: 1rem;
-  }
-}
-
-#summarize {
-  display: none;
-  margin: auto;
-  margin-bottom: 1.7rem;
-  padding: 1rem 3rem;
-  color: $primary-color;
-  border-radius: 1rem;
-  span {
-    color: black;
-  }
-  i {
-    font-size: 2rem;
   }
 }
 
@@ -439,10 +503,10 @@ footer {
     margin-bottom: 2rem;
     margin-top: 2rem;
     h1 {
-      font-size: 2rem;
+      font-size: 2.4rem;
     }
     p {
-      font-size: 1rem;
+      font-size: 1.2rem;
     }
   }
   .modal {
@@ -455,15 +519,15 @@ footer {
       margin: auto;
       display: flex;
       margin-bottom: 2rem;
-      padding: 1.5rem 0rem;
+      padding: 1.75rem 0rem;
       flex-direction: row;
       h4 {
-        font-size: 1rem;
+        font-size: 1.4rem;
       }
       p {
         width: 100%;
         text-align: center;
-        font-size: 0.8rem;
+        font-size: 1rem;
       }
     }
   }
@@ -479,8 +543,8 @@ footer {
   .buttons-container {
     margin: unset;
     button {
-      font-size: 0.7rem;
-      padding: 0.4rem 0.7rem;
+      font-size: 0.9rem;
+      padding: 0.7rem 0.9rem;
     }
   }
 

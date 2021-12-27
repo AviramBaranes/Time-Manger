@@ -1,6 +1,5 @@
 "use strict";
-var addTaskBtn = document.getElementById('addBtn');
-var backdrop = document.querySelector('.backdrop');
+//Modals
 var modals = document.querySelectorAll('.modal');
 var formModal = modals[0];
 var deleteModal = modals[1];
@@ -9,27 +8,36 @@ var summarizeModal = modals[3];
 var detailModal = modals[4];
 var contactFormModal = modals[5];
 var messageModal = modals[6];
+//Buttons
+//open-buttons:
+var addTaskBtn = document.getElementById('addBtn');
+var summarizeBtn = document.getElementById('summarize');
+var contactBtn = document.getElementById('contactBtn');
+//close-buttons:
 var closeDetailModalBtn = detailModal.children[3];
 var approveBtn = deleteModal.children[1].children[0];
 var cancelBtn = deleteModal.children[1].children[1];
-var summarizeBtn = document.getElementById('summarize');
 var closeSummarizeBtn = summarizeModal.children[2];
+var contactFormSubmitBtn = contactFormModal.querySelector('button');
+var closeContactMessageBtn = messageModal.children[2];
+//Forms
+var form = formModal.children[0];
 var contactForm = contactFormModal.children[2];
+//Inputs
 var emailInput = contactForm.children[0].children[0];
 var contactEmailInput = contactForm.children[1]
     .children[0];
-var contactFormSubmitBtn = contactFormModal.querySelector('button');
-var form = formModal.children[0];
 var taskNameInput = form.children[2].children[0];
 var taskTimeInput = form.children[3].children[0];
 var taskDescriptionInput = form.children[4]
     .children[0];
+//Other DOM elements
+var contactFormParagraphError = contactFormModal.children[0];
 var errorParagraph = document.getElementById('error');
 var tasksList = document.querySelector('.tasks-list');
 var tasksSummarizeList = document.querySelector('.tasks-summarize');
-var contactBtn = document.querySelector("li[name='contactBtn']");
-var contactFormParagraphError = contactFormModal.children[0];
-var closeContactMessageBtn = messageModal.children[2];
+var backdrop = document.querySelector('.backdrop');
+//Not a DOM elements
 var audio = new Audio('./assets/taskCompletedSound.ogg');
 var storageEvent = new CustomEvent('storageChanged');
 var ZERO_TIME = '00:00:00:00';
@@ -60,6 +68,7 @@ var ZERO_TIME = '00:00:00:00';
 })();
 //eventListeners
 function addTaskHandler() {
+    this.classList.remove('hover');
     formModal.style.display = 'block';
     backdrop.style.display = 'block';
 }
@@ -163,14 +172,10 @@ function playBtnClickedHandler() {
             var taskName = currentListItem.children[0].children[0].innerHTML;
             var _b = JSON.parse(localStorage.getItem(taskName)), goalTime = _b.goalTime, description = _b.description;
             var _c = goalTime.split(':'), hoursGoal = _c[0], minutesGoal = _c[1];
-            var temp = 1;
-            if (temp == 1
-            // hoursGoal === newTime[0] &&
-            // minutesGoal === newTime[1] &&
-            // newTime[2] === '00' &&
-            // newTime[3] === '00'
-            ) {
-                temp++;
+            if (hoursGoal === newTime[0] &&
+                minutesGoal === newTime[1] &&
+                newTime[2] === '00' &&
+                newTime[3] === '00') {
                 audio.play();
                 taskFinishedModal.children[1].innerHTML = "You finished the task: " + taskName;
                 taskFinishedModal.style.display = 'block';
@@ -266,10 +271,9 @@ function submitFormHandler(e) {
     var newListItem = createListItem(taskName);
     tasksList.appendChild(newListItem);
     taskNameInput.nextElementSibling.className = '';
-    taskTimeInput.nextElementSibling.className = '';
     taskDescriptionInput.className = '';
     taskNameInput.value = '';
-    taskTimeInput.value = '';
+    taskTimeInput.value = '00:10';
     taskDescriptionInput.value = '';
     errorParagraph.innerText = '';
     formModal.style.display = 'none';
@@ -326,6 +330,9 @@ function createListItem(taskName, progressTime) {
     playBtn.innerHTML = '<i class="fas fa-play"></i>';
     deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
     resetBtn.innerHTML = '<i class="fas fa-redo-alt"></i>';
+    playBtn.className = 'task-button';
+    deleteBtn.className = 'task-button delete-btn';
+    resetBtn.className = 'task-button';
     if (!progressTime || progressTime === ZERO_TIME)
         resetBtn.style.display = 'none';
     playBtn.addEventListener('click', playBtnClickedHandler);
