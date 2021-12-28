@@ -61,10 +61,18 @@ const ZERO_TIME = '00:00:00:00';
   storageChangedHandler();
   for (let i = 0; i < localStorage.length; i++) {
     const taskName = localStorage.key(i)!;
-    const { progressTime } = JSON.parse(
+    const { progressTime, goalTime } = JSON.parse(
       localStorage.getItem(taskName)!
     ) as TaskDataType;
-    const listItem = createListItem(localStorage.key(i)!, progressTime);
+    const [progressHours, progressMinutes] = progressTime.split(':');
+    const [goalHours, goalMinutes] = goalTime.split(':');
+    const isFinished =
+      +progressHours >= +goalHours && +progressMinutes >= +goalMinutes;
+    const listItem = createListItem(
+      localStorage.key(i)!,
+      isFinished,
+      progressTime
+    );
     tasksList.appendChild(listItem);
   }
   window.addEventListener('storageChanged', storageChangedHandler);
@@ -157,7 +165,7 @@ function deleteBtnClickedHandler(this: HTMLButtonElement) {
   //closure
   approveBtn.addEventListener('click', () => {
     const listItem = this.parentElement!.parentElement!;
-    localStorage.removeItem(listItem.children[0].children[0].innerHTML);
+    localStorage.removeItem(listItem.children[1].children[0].innerHTML);
     window.dispatchEvent(storageEvent);
     listItem.remove();
     deleteModal.style.display = 'none';
@@ -171,33 +179,36 @@ function deleteBtnClickedHandler(this: HTMLButtonElement) {
 
 function playBtnClickedHandler(this: HTMLButtonElement) {
   const currentListItem = this.parentElement!.parentElement!;
-  const paragraphElement = currentListItem.children[0].children[1];
-  const taskName = currentListItem.children[0].children[0].innerHTML;
-  const resetBtn = currentListItem.children[1].children[2] as HTMLButtonElement;
+  const paragraphElement = currentListItem.children[1].children[1];
+  const taskName = currentListItem.children[1].children[0].innerHTML;
+  const resetBtn = currentListItem.children[2].children[2] as HTMLButtonElement;
   const { startTime, goalTime, progressTime, description } = JSON.parse(
     localStorage.getItem(taskName)!
   ) as TaskDataType;
   const updatedStartTime = startTime === 'NONE' ? Date.now() : startTime;
-  const [hours, minutes, seconds, centiseconds] = progressTime.split(':');
+  let [hours, minutes, seconds, centiseconds] = progressTime.split(':');
 
   if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
     this.innerHTML = '<i class="fas fa-pause"></i>';
     resetBtn.style.display = 'none';
 
     const interval = setInterval(() => {
-      const timePassed = (Date.now() - +updatedStartTime) / 10; //in centiseconds
-      const newCentiseconds = Math.floor((timePassed % 100) + +centiseconds)
+      const extraTime =
+        +centiseconds + 100 * +seconds + 6000 * +minutes + 3600 * +hours;
+      const timePassed = (Date.now() - +updatedStartTime) / 10 + extraTime; //in centiseconds
+      const newCentiseconds = Math.floor(timePassed % 100)
         .toString()
         .padStart(2, '0');
-      const newSeconds = Math.floor(((timePassed / 100) % 60) + +seconds)
+      const newSeconds = Math.floor((timePassed / 100) % 60)
         .toString()
         .padStart(2, '0');
-      const newMinutes = Math.floor(((timePassed / 100 / 60) % 60) + +minutes)
+      const newMinutes = Math.floor((timePassed / 100 / 60) % 60)
         .toString()
         .padStart(2, '0');
-      const newHours = Math.floor(((timePassed / 100 / 60 / 60) % 60) + +hours)
+      const newHours = Math.floor((timePassed / 100 / 60 / 60) % 60)
         .toString()
         .padStart(2, '0');
+
       const currentTime = [
         newHours,
         newMinutes,
@@ -221,6 +232,8 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
         newCentiseconds === '00'
       ) {
         audio.play();
+        const checkIconDiv = currentListItem.children[0] as HTMLDivElement;
+        checkIconDiv.style.display = 'block';
         taskFinishedModal.children[1].innerHTML = `You finished the task: ${taskName}`;
         taskFinishedModal.style.display = 'block';
         backdrop.style.display = 'block';
@@ -249,9 +262,10 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
 
 function resetBtnClickedHandler(this: HTMLButtonElement) {
   const listItem = this.parentElement!.parentElement!;
-  const taskName = listItem.children[0].children[0].innerHTML;
-  listItem.children[0].children[1].innerHTML = ZERO_TIME;
-  listItem.children[1].children[0].innerHTML = '<i class="fas fa-play"></i>';
+  const taskName = listItem.children[1].children[0].innerHTML;
+  (listItem.children[0] as HTMLDivElement).style.display = 'none';
+  listItem.children[1].children[1].innerHTML = ZERO_TIME;
+  listItem.children[2].children[0].innerHTML = '<i class="fas fa-play"></i>';
   const { goalTime, description } = JSON.parse(
     localStorage.getItem(taskName)!
   ) as TaskDataType;
@@ -307,7 +321,7 @@ function submitFormHandler(e: Event) {
 
   localStorage.setItem(taskName, taskData);
   window.dispatchEvent(storageEvent);
-  const newListItem = createListItem(taskName);
+  const newListItem = createListItem(taskName, false);
   tasksList.appendChild(newListItem);
   taskNameInput.nextElementSibling!.className = '';
   taskDescriptionInput!.className = '';
@@ -357,19 +371,28 @@ function submitContactFormHandler(event: Event) {
 }
 
 //utility
-function createListItem(taskName: string, progressTime?: string) {
+function createListItem(
+  taskName: string,
+  finished: boolean,
+  progressTime?: string
+) {
   const liElement = document.createElement('li');
   const h4Element = document.createElement('h4');
   const pElement = document.createElement('p');
   const playBtn = document.createElement('button');
   const deleteBtn = document.createElement('button');
   const resetBtn = document.createElement('button');
+  const checkIconContainer = document.createElement('div');
   const textContainer = document.createElement('div');
   const buttonsContainer = document.createElement('div');
   textContainer.className = 'text-container';
   buttonsContainer.className = 'buttons-container';
   h4Element.innerText = taskName;
   pElement.innerText = progressTime || ZERO_TIME;
+  if (!finished) {
+    checkIconContainer.style.display = 'none';
+  }
+  checkIconContainer.innerHTML = '<i class="fas fa-check"></i>';
   playBtn.innerHTML = '<i class="fas fa-play"></i>';
   deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
   resetBtn.innerHTML = '<i class="fas fa-redo-alt"></i>';
@@ -386,6 +409,7 @@ function createListItem(taskName: string, progressTime?: string) {
   buttonsContainer.appendChild(playBtn);
   buttonsContainer.appendChild(deleteBtn);
   buttonsContainer.appendChild(resetBtn);
+  liElement.appendChild(checkIconContainer);
   liElement.appendChild(textContainer);
   liElement.appendChild(buttonsContainer);
   h4Element.addEventListener('click', () => {

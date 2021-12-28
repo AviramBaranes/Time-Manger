@@ -45,8 +45,11 @@ var ZERO_TIME = '00:00:00:00';
     storageChangedHandler();
     for (var i = 0; i < localStorage.length; i++) {
         var taskName = localStorage.key(i);
-        var progressTime = JSON.parse(localStorage.getItem(taskName)).progressTime;
-        var listItem = createListItem(localStorage.key(i), progressTime);
+        var _a = JSON.parse(localStorage.getItem(taskName)), progressTime = _a.progressTime, goalTime = _a.goalTime;
+        var _b = progressTime.split(':'), progressHours = _b[0], progressMinutes = _b[1];
+        var _c = goalTime.split(':'), goalHours = _c[0], goalMinutes = _c[1];
+        var isFinished = +progressHours >= +goalHours && +progressMinutes >= +goalMinutes;
+        var listItem = createListItem(localStorage.key(i), isFinished, progressTime);
         tasksList.appendChild(listItem);
     }
     window.addEventListener('storageChanged', storageChangedHandler);
@@ -125,7 +128,7 @@ function deleteBtnClickedHandler() {
     //closure
     approveBtn.addEventListener('click', function () {
         var listItem = _this.parentElement.parentElement;
-        localStorage.removeItem(listItem.children[0].children[0].innerHTML);
+        localStorage.removeItem(listItem.children[1].children[0].innerHTML);
         window.dispatchEvent(storageEvent);
         listItem.remove();
         deleteModal.style.display = 'none';
@@ -139,9 +142,9 @@ function deleteBtnClickedHandler() {
 function playBtnClickedHandler() {
     var _this = this;
     var currentListItem = this.parentElement.parentElement;
-    var paragraphElement = currentListItem.children[0].children[1];
-    var taskName = currentListItem.children[0].children[0].innerHTML;
-    var resetBtn = currentListItem.children[1].children[2];
+    var paragraphElement = currentListItem.children[1].children[1];
+    var taskName = currentListItem.children[1].children[0].innerHTML;
+    var resetBtn = currentListItem.children[2].children[2];
     var _a = JSON.parse(localStorage.getItem(taskName)), startTime = _a.startTime, goalTime = _a.goalTime, progressTime = _a.progressTime, description = _a.description;
     var updatedStartTime = startTime === 'NONE' ? Date.now() : startTime;
     var _b = progressTime.split(':'), hours = _b[0], minutes = _b[1], seconds = _b[2], centiseconds = _b[3];
@@ -149,17 +152,18 @@ function playBtnClickedHandler() {
         this.innerHTML = '<i class="fas fa-pause"></i>';
         resetBtn.style.display = 'none';
         var interval_1 = setInterval(function () {
-            var timePassed = (Date.now() - +updatedStartTime) / 10; //in centiseconds
-            var newCentiseconds = Math.floor((timePassed % 100) + +centiseconds)
+            var extraTime = +centiseconds + 100 * +seconds + 6000 * +minutes + 3600 * +hours;
+            var timePassed = (Date.now() - +updatedStartTime) / 10 + extraTime; //in centiseconds
+            var newCentiseconds = Math.floor(timePassed % 100)
                 .toString()
                 .padStart(2, '0');
-            var newSeconds = Math.floor(((timePassed / 100) % 60) + +seconds)
+            var newSeconds = Math.floor((timePassed / 100) % 60)
                 .toString()
                 .padStart(2, '0');
-            var newMinutes = Math.floor(((timePassed / 100 / 60) % 60) + +minutes)
+            var newMinutes = Math.floor((timePassed / 100 / 60) % 60)
                 .toString()
                 .padStart(2, '0');
-            var newHours = Math.floor(((timePassed / 100 / 60 / 60) % 60) + +hours)
+            var newHours = Math.floor((timePassed / 100 / 60 / 60) % 60)
                 .toString()
                 .padStart(2, '0');
             var currentTime = [
@@ -176,6 +180,8 @@ function playBtnClickedHandler() {
                 newSeconds === '00' &&
                 newCentiseconds === '00') {
                 audio.play();
+                var checkIconDiv = currentListItem.children[0];
+                checkIconDiv.style.display = 'block';
                 taskFinishedModal.children[1].innerHTML = "You finished the task: " + taskName;
                 taskFinishedModal.style.display = 'block';
                 backdrop.style.display = 'block';
@@ -203,9 +209,10 @@ function playBtnClickedHandler() {
 }
 function resetBtnClickedHandler() {
     var listItem = this.parentElement.parentElement;
-    var taskName = listItem.children[0].children[0].innerHTML;
-    listItem.children[0].children[1].innerHTML = ZERO_TIME;
-    listItem.children[1].children[0].innerHTML = '<i class="fas fa-play"></i>';
+    var taskName = listItem.children[1].children[0].innerHTML;
+    listItem.children[0].style.display = 'none';
+    listItem.children[1].children[1].innerHTML = ZERO_TIME;
+    listItem.children[2].children[0].innerHTML = '<i class="fas fa-play"></i>';
     var _a = JSON.parse(localStorage.getItem(taskName)), goalTime = _a.goalTime, description = _a.description;
     addToLocalHost(taskName, goalTime, ZERO_TIME, 'NONE', description);
     clearInterval(+listItem.getAttribute('data-interval'));
@@ -250,7 +257,7 @@ function submitFormHandler(e) {
     var taskData = JSON.stringify(taskDataObj);
     localStorage.setItem(taskName, taskData);
     window.dispatchEvent(storageEvent);
-    var newListItem = createListItem(taskName);
+    var newListItem = createListItem(taskName, false);
     tasksList.appendChild(newListItem);
     taskNameInput.nextElementSibling.className = '';
     taskDescriptionInput.className = '';
@@ -296,19 +303,24 @@ function submitContactFormHandler(event) {
     });
 }
 //utility
-function createListItem(taskName, progressTime) {
+function createListItem(taskName, finished, progressTime) {
     var liElement = document.createElement('li');
     var h4Element = document.createElement('h4');
     var pElement = document.createElement('p');
     var playBtn = document.createElement('button');
     var deleteBtn = document.createElement('button');
     var resetBtn = document.createElement('button');
+    var checkIconContainer = document.createElement('div');
     var textContainer = document.createElement('div');
     var buttonsContainer = document.createElement('div');
     textContainer.className = 'text-container';
     buttonsContainer.className = 'buttons-container';
     h4Element.innerText = taskName;
     pElement.innerText = progressTime || ZERO_TIME;
+    if (!finished) {
+        checkIconContainer.style.display = 'none';
+    }
+    checkIconContainer.innerHTML = '<i class="fas fa-check"></i>';
     playBtn.innerHTML = '<i class="fas fa-play"></i>';
     deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
     resetBtn.innerHTML = '<i class="fas fa-redo-alt"></i>';
@@ -325,6 +337,7 @@ function createListItem(taskName, progressTime) {
     buttonsContainer.appendChild(playBtn);
     buttonsContainer.appendChild(deleteBtn);
     buttonsContainer.appendChild(resetBtn);
+    liElement.appendChild(checkIconContainer);
     liElement.appendChild(textContainer);
     liElement.appendChild(buttonsContainer);
     h4Element.addEventListener('click', function () {

@@ -120,6 +120,7 @@ button {
     border-radius: 0.75rem;
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
     h4 {
       cursor: pointer;
       color: $primary-color;
@@ -136,9 +137,6 @@ button {
         width: 100%;
         transition: width 0.3s;
       }
-      // &:hover {
-      //   border-bottom: 1px solid $primary-color;
-      // }
     }
     p {
       font-size: 0.8rem;

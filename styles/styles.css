@@ -116,6 +116,7 @@ button {
   border-radius: 0.75rem;
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
 }
 .tasks-list li:nth-child(1) {
   -webkit-animation-duration: 0.4s;
