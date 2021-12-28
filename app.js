@@ -98,9 +98,12 @@ function storageChangedHandler() {
 function summarizeBtnClickedHandler() {
     this.disabled = true;
     for (var i = 0; i < localStorage.length; i++) {
-        var taskData = JSON.parse(localStorage.getItem(localStorage.key(i)));
-        var modifiedTaskProgress = taskData.progressTime.substring(0, 5);
-        var newListItem = createSummarizeListItem(localStorage.key(i), modifiedTaskProgress, taskData.goalTime);
+        var _a = JSON.parse(localStorage.getItem(localStorage.key(i))), progressTime = _a.progressTime, goalTime = _a.goalTime;
+        var modifiedTaskProgress = progressTime.substring(0, 5);
+        var _b = progressTime.split(':'), progressHours = _b[0], progressMinutes = _b[1];
+        var _c = goalTime.split(':'), goalHours = _c[0], goalMinutes = _c[1];
+        var isFinished = +progressHours >= +goalHours && +progressMinutes >= +goalMinutes;
+        var newListItem = createSummarizeListItem(localStorage.key(i), modifiedTaskProgress, goalTime, isFinished);
         tasksSummarizeList.appendChild(newListItem);
     }
     summarizeModal.style.display = 'block';
@@ -179,6 +182,9 @@ function playBtnClickedHandler() {
                 minutesGoal === newMinutes &&
                 newSeconds === '00' &&
                 newCentiseconds === '00') {
+                if (hoursGoal <= newHours && minutesGoal <= newMinutes) {
+                    currentListItem.classList.add('finished');
+                }
                 audio.play();
                 var checkIconDiv = currentListItem.children[0];
                 checkIconDiv.style.display = 'block';
@@ -213,6 +219,8 @@ function resetBtnClickedHandler() {
     listItem.children[0].style.display = 'none';
     listItem.children[1].children[1].innerHTML = ZERO_TIME;
     listItem.children[2].children[0].innerHTML = '<i class="fas fa-play"></i>';
+    // checkIconContainer.style.display = 'none';
+    listItem.classList.remove('finished');
     var _a = JSON.parse(localStorage.getItem(taskName)), goalTime = _a.goalTime, description = _a.description;
     addToLocalHost(taskName, goalTime, ZERO_TIME, 'NONE', description);
     clearInterval(+listItem.getAttribute('data-interval'));
@@ -304,6 +312,7 @@ function submitContactFormHandler(event) {
 }
 //utility
 function createListItem(taskName, finished, progressTime) {
+    console.log(finished);
     var liElement = document.createElement('li');
     var h4Element = document.createElement('h4');
     var pElement = document.createElement('p');
@@ -315,10 +324,16 @@ function createListItem(taskName, finished, progressTime) {
     var buttonsContainer = document.createElement('div');
     textContainer.className = 'text-container';
     buttonsContainer.className = 'buttons-container';
+    checkIconContainer.className = 'check-icon-container';
     h4Element.innerText = taskName;
     pElement.innerText = progressTime || ZERO_TIME;
     if (!finished) {
         checkIconContainer.style.display = 'none';
+        liElement.classList.remove('finished');
+    }
+    else {
+        liElement.classList.add('finished');
+        console.log('here');
     }
     checkIconContainer.innerHTML = '<i class="fas fa-check"></i>';
     playBtn.innerHTML = '<i class="fas fa-play"></i>';
@@ -351,14 +366,22 @@ function createListItem(taskName, finished, progressTime) {
     });
     return liElement;
 }
-function createSummarizeListItem(taskName, taskProgress, taskGoal) {
+function createSummarizeListItem(taskName, taskProgress, taskGoal, finished) {
     var liElement = document.createElement('li');
+    var textContainer = document.createElement('div');
+    var checkIconContainer = document.createElement('div');
     var h4Element = document.createElement('h4');
     var pElement = document.createElement('p');
+    if (finished) {
+        liElement.classList.add('finished');
+        checkIconContainer.innerHTML = '<i class="fas fa-check"></i>';
+    }
     h4Element.innerText = taskName + ":";
     pElement.innerText = taskProgress + "/" + taskGoal;
-    liElement.appendChild(h4Element);
-    liElement.appendChild(pElement);
+    textContainer.appendChild(h4Element);
+    textContainer.appendChild(pElement);
+    liElement.appendChild(textContainer);
+    liElement.appendChild(checkIconContainer);
     return liElement;
 }
 function addToLocalHost(taskName, goalTime, progressTime, startTime, description) {

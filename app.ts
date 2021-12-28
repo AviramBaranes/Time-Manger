@@ -128,12 +128,19 @@ function storageChangedHandler() {
 function summarizeBtnClickedHandler(this: HTMLButtonElement) {
   this.disabled = true;
   for (let i = 0; i < localStorage.length; i++) {
-    const taskData = JSON.parse(localStorage.getItem(localStorage.key(i)!)!);
-    const modifiedTaskProgress = taskData.progressTime.substring(0, 5);
+    const { progressTime, goalTime } = JSON.parse(
+      localStorage.getItem(localStorage.key(i)!)!
+    ) as TaskDataType;
+    const modifiedTaskProgress = progressTime.substring(0, 5);
+    const [progressHours, progressMinutes] = progressTime.split(':');
+    const [goalHours, goalMinutes] = goalTime.split(':');
+    const isFinished =
+      +progressHours >= +goalHours && +progressMinutes >= +goalMinutes;
     const newListItem = createSummarizeListItem(
       localStorage.key(i)!,
       modifiedTaskProgress,
-      taskData.goalTime
+      goalTime,
+      isFinished
     );
     tasksSummarizeList.appendChild(newListItem);
   }
@@ -231,6 +238,9 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
         newSeconds === '00' &&
         newCentiseconds === '00'
       ) {
+        if (hoursGoal <= newHours && minutesGoal <= newMinutes) {
+          currentListItem.classList.add('finished');
+        }
         audio.play();
         const checkIconDiv = currentListItem.children[0] as HTMLDivElement;
         checkIconDiv.style.display = 'block';
@@ -266,6 +276,8 @@ function resetBtnClickedHandler(this: HTMLButtonElement) {
   (listItem.children[0] as HTMLDivElement).style.display = 'none';
   listItem.children[1].children[1].innerHTML = ZERO_TIME;
   listItem.children[2].children[0].innerHTML = '<i class="fas fa-play"></i>';
+  // checkIconContainer.style.display = 'none';
+  listItem.classList.remove('finished');
   const { goalTime, description } = JSON.parse(
     localStorage.getItem(taskName)!
   ) as TaskDataType;
@@ -376,6 +388,8 @@ function createListItem(
   finished: boolean,
   progressTime?: string
 ) {
+  console.log(finished);
+
   const liElement = document.createElement('li');
   const h4Element = document.createElement('h4');
   const pElement = document.createElement('p');
@@ -387,10 +401,15 @@ function createListItem(
   const buttonsContainer = document.createElement('div');
   textContainer.className = 'text-container';
   buttonsContainer.className = 'buttons-container';
+  checkIconContainer.className = 'check-icon-container';
   h4Element.innerText = taskName;
   pElement.innerText = progressTime || ZERO_TIME;
   if (!finished) {
     checkIconContainer.style.display = 'none';
+    liElement.classList.remove('finished');
+  } else {
+    liElement.classList.add('finished');
+    console.log('here');
   }
   checkIconContainer.innerHTML = '<i class="fas fa-check"></i>';
   playBtn.innerHTML = '<i class="fas fa-play"></i>';
@@ -431,15 +450,24 @@ function createListItem(
 function createSummarizeListItem(
   taskName: string,
   taskProgress: string,
-  taskGoal: string
+  taskGoal: string,
+  finished: boolean
 ) {
   const liElement = document.createElement('li');
+  const textContainer = document.createElement('div');
+  const checkIconContainer = document.createElement('div');
   const h4Element = document.createElement('h4');
   const pElement = document.createElement('p');
+  if (finished) {
+    liElement.classList.add('finished');
+    checkIconContainer.innerHTML = '<i class="fas fa-check"></i>';
+  }
   h4Element.innerText = `${taskName}:`;
   pElement.innerText = `${taskProgress}/${taskGoal}`;
-  liElement.appendChild(h4Element);
-  liElement.appendChild(pElement);
+  textContainer.appendChild(h4Element);
+  textContainer.appendChild(pElement);
+  liElement.appendChild(textContainer);
+  liElement.appendChild(checkIconContainer);
   return liElement;
 }
 

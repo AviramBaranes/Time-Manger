@@ -2,12 +2,34 @@
 @import 'breakpoint.scss';
 
 $primary-color: rgb(62, 101, 228);
+$success-color: rgb(11, 221, 11);
 
 @mixin modal-button {
   padding: 0.3rem 1rem;
   border-radius: 0.6rem;
   font-weight: bold;
   color: white;
+}
+
+@mixin child-delay {
+  &:nth-child(1) {
+    animation-duration: 0.4s;
+  }
+  &:nth-child(2) {
+    animation-duration: 0.45s;
+  }
+  &:nth-child(3) {
+    animation-duration: 0.5s;
+  }
+  &:nth-child(4) {
+    animation-duration: 0.55s;
+  }
+  &:nth-child(5) {
+    animation-duration: 0.65s;
+  }
+  &:nth-child(6) {
+    animation-duration: 0.7s;
+  }
 }
 
 @keyframes slide-down {
@@ -95,24 +117,7 @@ button {
 
 .tasks-list {
   li {
-    &:nth-child(1) {
-      animation-duration: 0.4s;
-    }
-    &:nth-child(2) {
-      animation-duration: 0.45s;
-    }
-    &:nth-child(3) {
-      animation-duration: 0.5s;
-    }
-    &:nth-child(4) {
-      animation-duration: 0.55s;
-    }
-    &:nth-child(5) {
-      animation-duration: 0.65s;
-    }
-    &:nth-child(6) {
-      animation-duration: 0.7s;
-    }
+    @include child-delay;
     animation: slide-right 0.5s ease-in-out;
     border: 2px solid $primary-color;
     margin-bottom: 1rem;
@@ -145,6 +150,38 @@ button {
   }
 }
 
+.finished {
+  position: relative;
+  border-color: $success-color !important;
+  h4 {
+    color: $success-color !important;
+    &::after {
+      content: '';
+      background-color: $success-color !important;
+    }
+  }
+  .check-icon-container {
+    text-align: center;
+  }
+  .task-button {
+    border-color: $success-color !important;
+    &:hover {
+      transform: scale(1.2);
+      color: white;
+      background-color: $success-color;
+    }
+  }
+}
+
+.fa-check {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  font-size: 1.2rem;
+  color: $success-color;
+  margin-bottom: 0.5rem;
+}
+
 .task-button {
   transition: transform 0.15s ease-in-out;
   &:hover {
@@ -156,7 +193,7 @@ button {
 
 .delete-btn {
   &:hover {
-    background-color: white;
+    background-color: white !important;
     color: white !important;
     border: 2px red solid;
   }
@@ -407,7 +444,7 @@ button {
 
 .task-finished-modal {
   h2 {
-    color: $primary-color;
+    color: $success-color;
   }
   p {
     margin: 1.7rem 0rem;
@@ -465,6 +502,10 @@ footer {
   li {
     cursor: pointer;
     font-size: 1.4rem;
+    transition: transform 0.2s ease-in-out;
+    &:hover {
+      transform: scale(1.17);
+    }
   }
 }
 .fa-github,

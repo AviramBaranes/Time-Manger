@@ -164,6 +164,38 @@ button {
   width: 4.4rem;
 }
 
+.finished {
+  position: relative;
+  border-color: #0bdd0b !important;
+}
+.finished h4 {
+  color: #0bdd0b !important;
+}
+.finished h4::after {
+  content: "";
+  background-color: #0bdd0b !important;
+}
+.finished .check-icon-container {
+  text-align: center;
+}
+.finished .task-button {
+  border-color: #0bdd0b !important;
+}
+.finished .task-button:hover {
+  transform: scale(1.2);
+  color: white;
+  background-color: #0bdd0b;
+}
+
+.fa-check {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  font-size: 1.2rem;
+  color: #0bdd0b;
+  margin-bottom: 0.5rem;
+}
+
 .task-button {
   transition: transform 0.15s ease-in-out;
 }
@@ -174,7 +206,7 @@ button {
 }
 
 .delete-btn:hover {
-  background-color: white;
+  background-color: white !important;
   color: white !important;
   border: 2px red solid;
 }
@@ -422,7 +454,7 @@ button {
 }
 
 .task-finished-modal h2 {
-  color: #3e65e4;
+  color: #0bdd0b;
 }
 .task-finished-modal p {
   margin: 1.7rem 0rem;
@@ -485,6 +517,10 @@ footer ul {
 footer li {
   cursor: pointer;
   font-size: 1.4rem;
+  transition: transform 0.2s ease-in-out;
+}
+footer li:hover {
+  transform: scale(1.17);
 }
 
 .fa-github,
