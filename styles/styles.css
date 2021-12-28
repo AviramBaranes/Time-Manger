@@ -110,7 +110,6 @@ button {
 .tasks-list li {
   -webkit-animation: slide-right 0.5s ease-in-out;
           animation: slide-right 0.5s ease-in-out;
-  cursor: pointer;
   border: 2px solid #3e65e4;
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
@@ -143,7 +142,21 @@ button {
           animation-duration: 0.7s;
 }
 .tasks-list li h4 {
+  cursor: pointer;
   color: #3e65e4;
+}
+.tasks-list li h4::after {
+  content: "";
+  display: block;
+  height: 2px;
+  background-color: #3e65e4;
+  width: 0;
+  margin: auto;
+  transition: width 0.3s;
+}
+.tasks-list li h4:hover::after {
+  width: 100%;
+  transition: width 0.3s;
 }
 .tasks-list li p {
   font-size: 0.8rem;

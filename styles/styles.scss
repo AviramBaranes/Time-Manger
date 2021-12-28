@@ -114,7 +114,6 @@ button {
       animation-duration: 0.7s;
     }
     animation: slide-right 0.5s ease-in-out;
-    cursor: pointer;
     border: 2px solid $primary-color;
     margin-bottom: 1rem;
     padding: 0.75rem 1rem;
@@ -122,7 +121,24 @@ button {
     display: flex;
     flex-direction: column;
     h4 {
+      cursor: pointer;
       color: $primary-color;
+      &::after {
+        content: '';
+        display: block;
+        height: 2px;
+        background-color: $primary-color;
+        width: 0;
+        margin: auto;
+        transition: width 0.3s;
+      }
+      &:hover::after {
+        width: 100%;
+        transition: width 0.3s;
+      }
+      // &:hover {
+      //   border-bottom: 1px solid $primary-color;
+      // }
     }
     p {
       font-size: 0.8rem;

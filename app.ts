@@ -388,9 +388,7 @@ function createListItem(taskName: string, progressTime?: string) {
   buttonsContainer.appendChild(resetBtn);
   liElement.appendChild(textContainer);
   liElement.appendChild(buttonsContainer);
-  liElement.addEventListener('click', (e) => {
-    if ((e.target as any).tagName === 'BUTTON') return;
-
+  h4Element.addEventListener('click', () => {
     const { goalTime, progressTime, description } = JSON.parse(
       localStorage.getItem(taskName)!
     ) as TaskDataType;

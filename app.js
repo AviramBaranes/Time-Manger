@@ -327,9 +327,7 @@ function createListItem(taskName, progressTime) {
     buttonsContainer.appendChild(resetBtn);
     liElement.appendChild(textContainer);
     liElement.appendChild(buttonsContainer);
-    liElement.addEventListener('click', function (e) {
-        if (e.target.tagName === 'BUTTON')
-            return;
+    h4Element.addEventListener('click', function () {
         var _a = JSON.parse(localStorage.getItem(taskName)), goalTime = _a.goalTime, progressTime = _a.progressTime, description = _a.description;
         detailModal.children[0].innerHTML = taskName;
         detailModal.children[1].innerHTML = progressTime.substring(0, 5) + "/" + goalTime;
