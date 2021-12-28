@@ -139,43 +139,42 @@ function deleteBtnClickedHandler() {
 function playBtnClickedHandler() {
     var _this = this;
     var currentListItem = this.parentElement.parentElement;
+    var paragraphElement = currentListItem.children[0].children[1];
+    var taskName = currentListItem.children[0].children[0].innerHTML;
+    var resetBtn = currentListItem.children[1].children[2];
+    var _a = JSON.parse(localStorage.getItem(taskName)), startTime = _a.startTime, goalTime = _a.goalTime, progressTime = _a.progressTime, description = _a.description;
+    var updatedStartTime = startTime === 'NONE' ? Date.now() : startTime;
+    var _b = progressTime.split(':'), hours = _b[0], minutes = _b[1], seconds = _b[2], centiseconds = _b[3];
     if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
         this.innerHTML = '<i class="fas fa-pause"></i>';
+        resetBtn.style.display = 'none';
         var interval_1 = setInterval(function () {
-            var resetBtn = currentListItem.children[1]
-                .children[2];
-            resetBtn.style.display = 'none';
-            var paragraphElement = currentListItem.children[0].children[1];
-            var currentTime = paragraphElement.innerHTML;
-            var _a = currentTime.split(':'), hours = _a[0], minutes = _a[1], seconds = _a[2], centiseconds = _a[3];
-            var newTime = [];
-            if (centiseconds === '99') {
-                if (seconds === '59') {
-                    if (minutes === '59') {
-                        var newHours = String(parseInt(hours) + 1).padStart(2, '0');
-                        newTime = [newHours, '00', '00', '00'];
-                    }
-                    else {
-                        var newMinutes = String(parseInt(minutes) + 1).padStart(2, '0');
-                        newTime = [hours, newMinutes, '00', '00'];
-                    }
-                }
-                else {
-                    var newSeconds = String(parseInt(seconds) + 1).padStart(2, '0');
-                    newTime = [hours, minutes, newSeconds, '00'];
-                }
-            }
-            else {
-                var newCentiseconds = String(parseInt(centiseconds) + 1).padStart(2, '0');
-                newTime = [hours, minutes, seconds, newCentiseconds];
-            }
-            var taskName = currentListItem.children[0].children[0].innerHTML;
-            var _b = JSON.parse(localStorage.getItem(taskName)), goalTime = _b.goalTime, description = _b.description;
-            var _c = goalTime.split(':'), hoursGoal = _c[0], minutesGoal = _c[1];
-            if (hoursGoal === newTime[0] &&
-                minutesGoal === newTime[1] &&
-                newTime[2] === '00' &&
-                newTime[3] === '00') {
+            var timePassed = (Date.now() - +updatedStartTime) / 10; //in centiseconds
+            var newCentiseconds = Math.floor((timePassed % 100) + +centiseconds)
+                .toString()
+                .padStart(2, '0');
+            var newSeconds = Math.floor(((timePassed / 100) % 60) + +seconds)
+                .toString()
+                .padStart(2, '0');
+            var newMinutes = Math.floor(((timePassed / 100 / 60) % 60) + +minutes)
+                .toString()
+                .padStart(2, '0');
+            var newHours = Math.floor(((timePassed / 100 / 60 / 60) % 60) + +hours)
+                .toString()
+                .padStart(2, '0');
+            var currentTime = [
+                newHours,
+                newMinutes,
+                newSeconds,
+                newCentiseconds,
+            ].join(':');
+            paragraphElement.innerHTML = currentTime;
+            addToLocalHost(taskName, goalTime, ZERO_TIME, updatedStartTime, description);
+            var _a = goalTime.split(':'), hoursGoal = _a[0], minutesGoal = _a[1];
+            if (hoursGoal === newHours &&
+                minutesGoal === newMinutes &&
+                newSeconds === '00' &&
+                newCentiseconds === '00') {
                 audio.play();
                 taskFinishedModal.children[1].innerHTML = "You finished the task: " + taskName;
                 taskFinishedModal.style.display = 'block';
@@ -189,22 +188,12 @@ function playBtnClickedHandler() {
                         '';
                 });
             }
-            var progressTime = newTime.join(':');
-            paragraphElement.innerHTML = progressTime;
-            var taskDataObj = { goalTime: goalTime, progressTime: progressTime };
-            if (description)
-                taskDataObj.description = description;
-            var updatedTaskData = JSON.stringify(taskDataObj);
-            localStorage.setItem(taskName, updatedTaskData);
-            window.dispatchEvent(storageEvent);
-            currentListItem.setAttribute('data-interval', interval_1.toString());
         }, 10);
+        currentListItem.setAttribute('data-interval', interval_1.toString());
     }
     else {
-        var paragraphElement = currentListItem.children[0].children[1];
         var currentTime = paragraphElement.innerHTML;
-        var resetBtn = currentListItem.children[1]
-            .children[2];
+        addToLocalHost(taskName, goalTime, currentTime, 'NONE', description);
         if (currentTime !== ZERO_TIME) {
             resetBtn.style.display = 'inline';
         }
@@ -218,15 +207,7 @@ function resetBtnClickedHandler() {
     listItem.children[0].children[1].innerHTML = ZERO_TIME;
     listItem.children[1].children[0].innerHTML = '<i class="fas fa-play"></i>';
     var _a = JSON.parse(localStorage.getItem(taskName)), goalTime = _a.goalTime, description = _a.description;
-    var taskDataObj = {
-        goalTime: goalTime,
-        progressTime: ZERO_TIME,
-    };
-    if (description)
-        taskDataObj.description = description;
-    var updatedTaskData = JSON.stringify(taskDataObj);
-    localStorage.setItem(taskName, updatedTaskData);
-    window.dispatchEvent(storageEvent);
+    addToLocalHost(taskName, goalTime, ZERO_TIME, 'NONE', description);
     clearInterval(+listItem.getAttribute('data-interval'));
     this.style.display = 'none';
 }
@@ -260,6 +241,7 @@ function submitFormHandler(e) {
         return;
     }
     var taskDataObj = {
+        startTime: 'NONE',
         goalTime: taskTime,
         progressTime: ZERO_TIME,
     };
@@ -313,7 +295,7 @@ function submitContactFormHandler(event) {
         contactFormParagraphError.innerHTML = '';
     });
 }
-//create DOM elements
+//utility
 function createListItem(taskName, progressTime) {
     var liElement = document.createElement('li');
     var h4Element = document.createElement('h4');
@@ -367,4 +349,16 @@ function createSummarizeListItem(taskName, taskProgress, taskGoal) {
     liElement.appendChild(h4Element);
     liElement.appendChild(pElement);
     return liElement;
+}
+function addToLocalHost(taskName, goalTime, progressTime, startTime, description) {
+    var taskDataObj = {
+        goalTime: goalTime,
+        progressTime: progressTime,
+        startTime: startTime.toString(),
+    };
+    if (description)
+        taskDataObj.description = description;
+    var updatedTaskData = JSON.stringify(taskDataObj);
+    localStorage.setItem(taskName, updatedTaskData);
+    window.dispatchEvent(storageEvent);
 }

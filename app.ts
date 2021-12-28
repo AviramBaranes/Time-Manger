@@ -1,6 +1,7 @@
 interface TaskDataType {
   goalTime: string;
   progressTime: string;
+  startTime: string;
   description?: string;
 }
 
@@ -170,48 +171,54 @@ function deleteBtnClickedHandler(this: HTMLButtonElement) {
 
 function playBtnClickedHandler(this: HTMLButtonElement) {
   const currentListItem = this.parentElement!.parentElement!;
+  const paragraphElement = currentListItem.children[0].children[1];
+  const taskName = currentListItem.children[0].children[0].innerHTML;
+  const resetBtn = currentListItem.children[1].children[2] as HTMLButtonElement;
+  const { startTime, goalTime, progressTime, description } = JSON.parse(
+    localStorage.getItem(taskName)!
+  ) as TaskDataType;
+  const updatedStartTime = startTime === 'NONE' ? Date.now() : startTime;
+  const [hours, minutes, seconds, centiseconds] = progressTime.split(':');
+
   if (this.innerHTML === '<i class="fas fa-play" aria-hidden="true"></i>') {
     this.innerHTML = '<i class="fas fa-pause"></i>';
+    resetBtn.style.display = 'none';
+
     const interval = setInterval(() => {
-      const resetBtn = currentListItem.children[1]
-        .children[2] as HTMLButtonElement;
-      resetBtn.style.display = 'none';
-      const paragraphElement = currentListItem.children[0].children[1];
-      const currentTime = paragraphElement.innerHTML;
-      const [hours, minutes, seconds, centiseconds] = currentTime.split(':');
-      let newTime: string[] = [];
-      if (centiseconds === '99') {
-        if (seconds === '59') {
-          if (minutes === '59') {
-            const newHours = String(parseInt(hours) + 1).padStart(2, '0');
-            newTime = [newHours, '00', '00', '00'];
-          } else {
-            const newMinutes = String(parseInt(minutes) + 1).padStart(2, '0');
-            newTime = [hours, newMinutes, '00', '00'];
-          }
-        } else {
-          const newSeconds = String(parseInt(seconds) + 1).padStart(2, '0');
-          newTime = [hours, minutes, newSeconds, '00'];
-        }
-      } else {
-        const newCentiseconds = String(parseInt(centiseconds) + 1).padStart(
-          2,
-          '0'
-        );
-        newTime = [hours, minutes, seconds, newCentiseconds];
-      }
-      const taskName = currentListItem.children[0].children[0].innerHTML;
+      const timePassed = (Date.now() - +updatedStartTime) / 10; //in centiseconds
+      const newCentiseconds = Math.floor((timePassed % 100) + +centiseconds)
+        .toString()
+        .padStart(2, '0');
+      const newSeconds = Math.floor(((timePassed / 100) % 60) + +seconds)
+        .toString()
+        .padStart(2, '0');
+      const newMinutes = Math.floor(((timePassed / 100 / 60) % 60) + +minutes)
+        .toString()
+        .padStart(2, '0');
+      const newHours = Math.floor(((timePassed / 100 / 60 / 60) % 60) + +hours)
+        .toString()
+        .padStart(2, '0');
+      const currentTime = [
+        newHours,
+        newMinutes,
+        newSeconds,
+        newCentiseconds,
+      ].join(':');
 
-      const { goalTime, description } = JSON.parse(
-        localStorage.getItem(taskName)!
-      ) as TaskDataType;
-
+      paragraphElement.innerHTML = currentTime;
+      addToLocalHost(
+        taskName,
+        goalTime,
+        ZERO_TIME,
+        updatedStartTime,
+        description
+      );
       const [hoursGoal, minutesGoal] = goalTime.split(':');
       if (
-        hoursGoal === newTime[0] &&
-        minutesGoal === newTime[1] &&
-        newTime[2] === '00' &&
-        newTime[3] === '00'
+        hoursGoal === newHours &&
+        minutesGoal === newMinutes &&
+        newSeconds === '00' &&
+        newCentiseconds === '00'
       ) {
         audio.play();
         taskFinishedModal.children[1].innerHTML = `You finished the task: ${taskName}`;
@@ -226,23 +233,11 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
             '';
         });
       }
-      const progressTime = newTime.join(':');
-
-      paragraphElement.innerHTML = progressTime;
-      const taskDataObj: TaskDataType = { goalTime, progressTime };
-
-      if (description) taskDataObj.description = description;
-
-      const updatedTaskData = JSON.stringify(taskDataObj);
-      localStorage.setItem(taskName, updatedTaskData);
-      window.dispatchEvent(storageEvent);
-      currentListItem.setAttribute('data-interval', interval.toString());
     }, 10);
+    currentListItem.setAttribute('data-interval', interval.toString());
   } else {
-    const paragraphElement = currentListItem.children[0].children[1];
     const currentTime = paragraphElement.innerHTML;
-    const resetBtn = currentListItem.children[1]
-      .children[2] as HTMLButtonElement;
+    addToLocalHost(taskName, goalTime, currentTime, 'NONE', description);
     if (currentTime !== ZERO_TIME) {
       resetBtn.style.display = 'inline';
     }
@@ -261,16 +256,8 @@ function resetBtnClickedHandler(this: HTMLButtonElement) {
     localStorage.getItem(taskName)!
   ) as TaskDataType;
 
-  const taskDataObj: TaskDataType = {
-    goalTime,
-    progressTime: ZERO_TIME,
-  };
+  addToLocalHost(taskName, goalTime, ZERO_TIME, 'NONE', description);
 
-  if (description) taskDataObj.description = description;
-
-  const updatedTaskData = JSON.stringify(taskDataObj);
-  localStorage.setItem(taskName, updatedTaskData);
-  window.dispatchEvent(storageEvent);
   clearInterval(+listItem.getAttribute('data-interval')!);
   this.style.display = 'none';
 }
@@ -309,6 +296,7 @@ function submitFormHandler(e: Event) {
     return;
   }
   const taskDataObj: TaskDataType = {
+    startTime: 'NONE',
     goalTime: taskTime,
     progressTime: ZERO_TIME,
   };
@@ -331,7 +319,7 @@ function submitFormHandler(e: Event) {
   backdrop.style.display = 'none';
 }
 
-function submitContactFormHandler(event: SubmitEvent) {
+function submitContactFormHandler(event: Event) {
   event.preventDefault();
 
   const data = new FormData(event.target as HTMLFormElement);
@@ -368,7 +356,7 @@ function submitContactFormHandler(event: SubmitEvent) {
     });
 }
 
-//create DOM elements
+//utility
 function createListItem(taskName: string, progressTime?: string) {
   const liElement = document.createElement('li');
   const h4Element = document.createElement('h4');
@@ -431,4 +419,24 @@ function createSummarizeListItem(
   liElement.appendChild(h4Element);
   liElement.appendChild(pElement);
   return liElement;
+}
+
+function addToLocalHost(
+  taskName: string,
+  goalTime: string,
+  progressTime: string,
+  startTime: string | number,
+  description?: string
+) {
+  const taskDataObj: TaskDataType = {
+    goalTime,
+    progressTime,
+    startTime: startTime.toString(),
+  };
+
+  if (description) taskDataObj.description = description;
+
+  const updatedTaskData = JSON.stringify(taskDataObj);
+  localStorage.setItem(taskName, updatedTaskData);
+  window.dispatchEvent(storageEvent);
 }
