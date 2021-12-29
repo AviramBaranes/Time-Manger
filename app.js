@@ -71,9 +71,7 @@ var ZERO_TIME = '00:00:00:00';
 })();
 //eventListeners
 function addTaskHandler() {
-    this.classList.remove('hover');
-    formModal.style.display = 'block';
-    backdrop.style.display = 'block';
+    openModal(formModal);
 }
 function closeDetailModalBtnClickedHandler() {
     detailModal.children[0].innerHTML = '';
@@ -106,12 +104,10 @@ function summarizeBtnClickedHandler() {
         var newListItem = createSummarizeListItem(localStorage.key(i), modifiedTaskProgress, goalTime, isFinished);
         tasksSummarizeList.appendChild(newListItem);
     }
-    summarizeModal.style.display = 'block';
-    backdrop.style.display = 'block';
+    openModal(summarizeModal);
 }
 function contactBtnClickedHandler() {
-    contactFormModal.style.display = 'block';
-    backdrop.style.display = 'block';
+    openModal(contactFormModal);
 }
 function closeSummarizeBtnClickedHandler() {
     summarizeModal.style.display = 'none';
@@ -126,8 +122,7 @@ function closeContactMessageHandler() {
 }
 function deleteBtnClickedHandler() {
     var _this = this;
-    deleteModal.style.display = 'block';
-    backdrop.style.display = 'block';
+    openModal(deleteModal);
     //closure
     approveBtn.addEventListener('click', function () {
         var listItem = _this.parentElement.parentElement;
@@ -189,8 +184,7 @@ function playBtnClickedHandler() {
                 var checkIconDiv = currentListItem.children[0];
                 checkIconDiv.style.display = 'block';
                 taskFinishedModal.children[1].innerHTML = "You finished the task: " + taskName;
-                taskFinishedModal.style.display = 'block';
-                backdrop.style.display = 'block';
+                openModal(taskFinishedModal);
                 taskFinishedModal.children[2].addEventListener('click', function () {
                     clearInterval(interval_1);
                     addToLocalHost(taskName, goalTime, currentTime, 'NONE', description);
@@ -396,4 +390,9 @@ function addToLocalHost(taskName, goalTime, progressTime, startTime, description
     var updatedTaskData = JSON.stringify(taskDataObj);
     localStorage.setItem(taskName, updatedTaskData);
     window.dispatchEvent(storageEvent);
+}
+function openModal(modal) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    modal.style.display = 'block';
+    backdrop.style.display = 'block';
 }

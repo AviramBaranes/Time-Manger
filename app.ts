@@ -98,10 +98,8 @@ const ZERO_TIME = '00:00:00:00';
 
 //eventListeners
 
-function addTaskHandler(this: HTMLButtonElement) {
-  this.classList.remove('hover');
-  formModal.style.display = 'block';
-  backdrop.style.display = 'block';
+function addTaskHandler() {
+  openModal(formModal);
 }
 
 function closeDetailModalBtnClickedHandler() {
@@ -144,13 +142,11 @@ function summarizeBtnClickedHandler(this: HTMLButtonElement) {
     );
     tasksSummarizeList.appendChild(newListItem);
   }
-  summarizeModal.style.display = 'block';
-  backdrop.style.display = 'block';
+  openModal(summarizeModal);
 }
 
 function contactBtnClickedHandler() {
-  contactFormModal.style.display = 'block';
-  backdrop.style.display = 'block';
+  openModal(contactFormModal);
 }
 
 function closeSummarizeBtnClickedHandler() {
@@ -167,8 +163,8 @@ function closeContactMessageHandler() {
 }
 
 function deleteBtnClickedHandler(this: HTMLButtonElement) {
-  deleteModal.style.display = 'block';
-  backdrop.style.display = 'block';
+  openModal(deleteModal);
+
   //closure
   approveBtn.addEventListener('click', () => {
     const listItem = this.parentElement!.parentElement!;
@@ -245,8 +241,7 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
         const checkIconDiv = currentListItem.children[0] as HTMLDivElement;
         checkIconDiv.style.display = 'block';
         taskFinishedModal.children[1].innerHTML = `You finished the task: ${taskName}`;
-        taskFinishedModal.style.display = 'block';
-        backdrop.style.display = 'block';
+        openModal(taskFinishedModal);
         taskFinishedModal.children[2].addEventListener('click', () => {
           clearInterval(interval);
           addToLocalHost(taskName, goalTime, currentTime, 'NONE', description);
@@ -490,4 +485,10 @@ function addToLocalHost(
   const updatedTaskData = JSON.stringify(taskDataObj);
   localStorage.setItem(taskName, updatedTaskData);
   window.dispatchEvent(storageEvent);
+}
+
+function openModal(modal: HTMLDivElement) {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  modal.style.display = 'block';
+  backdrop.style.display = 'block';
 }
