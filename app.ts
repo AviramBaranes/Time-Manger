@@ -197,7 +197,7 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
 
     const interval = setInterval(() => {
       const extraTime =
-        +centiseconds + 100 * +seconds + 6000 * +minutes + 3600 * +hours;
+        +centiseconds + 100 * +seconds + 6000 * +minutes + 360000 * +hours;
       const timePassed = (Date.now() - +updatedStartTime) / 10 + extraTime; //in centiseconds
       const newCentiseconds = Math.floor(timePassed % 100)
         .toString()

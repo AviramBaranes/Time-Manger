@@ -150,7 +150,7 @@ function playBtnClickedHandler() {
         this.innerHTML = '<i class="fas fa-pause"></i>';
         resetBtn.style.display = 'none';
         var interval_1 = setInterval(function () {
-            var extraTime = +centiseconds + 100 * +seconds + 6000 * +minutes + 3600 * +hours;
+            var extraTime = +centiseconds + 100 * +seconds + 6000 * +minutes + 360000 * +hours;
             var timePassed = (Date.now() - +updatedStartTime) / 10 + extraTime; //in centiseconds
             var newCentiseconds = Math.floor(timePassed % 100)
                 .toString()
