@@ -193,6 +193,7 @@ function playBtnClickedHandler() {
                 backdrop.style.display = 'block';
                 taskFinishedModal.children[2].addEventListener('click', function () {
                     clearInterval(interval_1);
+                    addToLocalHost(taskName, goalTime, currentTime, 'NONE', description);
                     _this.innerHTML = '<i class="fas fa-play"></i>';
                     taskFinishedModal.style.display = 'none';
                     backdrop.style.display = 'none';
