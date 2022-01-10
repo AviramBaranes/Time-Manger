@@ -91,7 +91,7 @@ ul {
 
 button {
   cursor: pointer;
-  border: black 1px solid;
+  border: #3e65e4 1px solid;
   background-color: white;
 }
 
@@ -110,13 +110,13 @@ button {
 .tasks-list li {
   -webkit-animation: slide-right 0.5s ease-in-out;
           animation: slide-right 0.5s ease-in-out;
-  border: 2px solid #3e65e4;
+  border: 1px solid #3e65e4;
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  background-color: #f4f4f4;
 }
 .tasks-list li:nth-child(1) {
   -webkit-animation-duration: 0.4s;
@@ -164,27 +164,54 @@ button {
   width: 4.4rem;
 }
 
-.finished {
+#finished {
   position: relative;
-  border-color: #0bdd0b !important;
+  border: 2px solid #1eff00;
+  background-color: #84e876;
 }
-.finished h4 {
-  color: #0bdd0b !important;
+#finished h4 {
+  color: black;
 }
-.finished h4::after {
+#finished h4::after {
   content: "";
-  background-color: #0bdd0b !important;
+  background-color: black;
 }
-.finished .check-icon-container {
+#finished .check-icon-container {
   text-align: center;
 }
-.finished .task-button {
-  border-color: #0bdd0b !important;
+#finished .task-button {
+  border-color: black;
 }
-.finished .task-button:hover {
+#finished .task-button:hover {
   transform: scale(1.2);
   color: white;
   background-color: #0bdd0b;
+}
+
+#finished-tasks-summary {
+  position: relative;
+  border-color: #0bdd0b;
+}
+#finished-tasks-summary h4 {
+  color: #0bdd0b;
+}
+#finished-tasks-summary h4::after {
+  content: "";
+  background-color: #0bdd0b;
+}
+#finished-tasks-summary .check-icon-container {
+  text-align: center;
+}
+#finished-tasks-summary .task-button {
+  border-color: #0bdd0b;
+}
+#finished-tasks-summary .task-button:hover {
+  transform: scale(1.2);
+  color: white;
+  background-color: #0bdd0b;
+}
+#finished-tasks-summary .fa-check {
+  color: #0bdd0b;
 }
 
 .fa-check {
@@ -192,7 +219,6 @@ button {
   right: 5px;
   top: 5px;
   font-size: 1.2rem;
-  color: #0bdd0b;
   margin-bottom: 0.5rem;
 }
 

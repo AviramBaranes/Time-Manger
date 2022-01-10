@@ -178,7 +178,7 @@ function playBtnClickedHandler() {
                 newSeconds === '00' &&
                 newCentiseconds === '00') {
                 if (hoursGoal <= newHours && minutesGoal <= newMinutes) {
-                    currentListItem.classList.add('finished');
+                    currentListItem.setAttribute('id', 'finished');
                 }
                 audio.play();
                 var checkIconDiv = currentListItem.children[0];
@@ -327,7 +327,7 @@ function createListItem(taskName, finished, progressTime) {
         liElement.classList.remove('finished');
     }
     else {
-        liElement.classList.add('finished');
+        liElement.setAttribute('id', 'finished');
         console.log('here');
     }
     checkIconContainer.innerHTML = '<i class="fas fa-check"></i>';
@@ -368,7 +368,7 @@ function createSummarizeListItem(taskName, taskProgress, taskGoal, finished) {
     var h4Element = document.createElement('h4');
     var pElement = document.createElement('p');
     if (finished) {
-        liElement.classList.add('finished');
+        liElement.setAttribute('id', 'finished-tasks-summary');
         checkIconContainer.innerHTML = '<i class="fas fa-check"></i>';
     }
     h4Element.innerText = taskName + ":";
