@@ -66,8 +66,9 @@ const ZERO_TIME = '00:00:00:00';
     ) as TaskDataType;
     const [progressHours, progressMinutes] = progressTime.split(':');
     const [goalHours, goalMinutes] = goalTime.split(':');
-    const isFinished =
-      +progressHours >= +goalHours && +progressMinutes >= +goalMinutes;
+    const progressTimeNumber = +progressHours * 60 + +progressMinutes;
+    const goalTimeNumber = +goalHours * 60 + +goalMinutes;
+    const isFinished = progressTimeNumber >= goalTimeNumber;
     const listItem = createListItem(
       localStorage.key(i)!,
       isFinished,
@@ -268,11 +269,11 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
 
 function resetBtnClickedHandler(this: HTMLButtonElement) {
   const listItem = this.parentElement!.parentElement!;
+  listItem.removeAttribute('id');
   const taskName = listItem.children[1].children[0].innerHTML;
   (listItem.children[0] as HTMLDivElement).style.display = 'none';
   listItem.children[1].children[1].innerHTML = ZERO_TIME;
   listItem.children[2].children[0].innerHTML = '<i class="fas fa-play"></i>';
-  // checkIconContainer.style.display = 'none';
   listItem.classList.remove('finished');
   const { goalTime, description } = JSON.parse(
     localStorage.getItem(taskName)!

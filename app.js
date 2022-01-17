@@ -48,7 +48,9 @@ var ZERO_TIME = '00:00:00:00';
         var _a = JSON.parse(localStorage.getItem(taskName)), progressTime = _a.progressTime, goalTime = _a.goalTime;
         var _b = progressTime.split(':'), progressHours = _b[0], progressMinutes = _b[1];
         var _c = goalTime.split(':'), goalHours = _c[0], goalMinutes = _c[1];
-        var isFinished = +progressHours >= +goalHours && +progressMinutes >= +goalMinutes;
+        var progressTimeNumber = +progressHours * 60 + +progressMinutes;
+        var goalTimeNumber = +goalHours * 60 + +goalMinutes;
+        var isFinished = progressTimeNumber >= goalTimeNumber;
         var listItem = createListItem(localStorage.key(i), isFinished, progressTime);
         tasksList.appendChild(listItem);
     }
@@ -210,11 +212,11 @@ function playBtnClickedHandler() {
 }
 function resetBtnClickedHandler() {
     var listItem = this.parentElement.parentElement;
+    listItem.removeAttribute('id');
     var taskName = listItem.children[1].children[0].innerHTML;
     listItem.children[0].style.display = 'none';
     listItem.children[1].children[1].innerHTML = ZERO_TIME;
     listItem.children[2].children[0].innerHTML = '<i class="fas fa-play"></i>';
-    // checkIconContainer.style.display = 'none';
     listItem.classList.remove('finished');
     var _a = JSON.parse(localStorage.getItem(taskName)), goalTime = _a.goalTime, description = _a.description;
     addToLocalHost(taskName, goalTime, ZERO_TIME, 'NONE', description);
