@@ -229,15 +229,15 @@ function playBtnClickedHandler(this: HTMLButtonElement) {
         description
       );
       const [hoursGoal, minutesGoal] = goalTime.split(':');
+      if (hoursGoal <= newHours && minutesGoal <= newMinutes) {
+        currentListItem.setAttribute('id', 'finished');
+      }
       if (
         hoursGoal === newHours &&
         minutesGoal === newMinutes &&
         newSeconds === '00' &&
         newCentiseconds === '00'
       ) {
-        if (hoursGoal <= newHours && minutesGoal <= newMinutes) {
-          currentListItem.setAttribute('id', 'finished');
-        }
         audio.play();
         const checkIconDiv = currentListItem.children[0] as HTMLDivElement;
         checkIconDiv.style.display = 'block';

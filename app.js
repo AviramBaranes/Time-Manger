@@ -175,13 +175,13 @@ function playBtnClickedHandler() {
             paragraphElement.innerHTML = currentTime;
             addToLocalHost(taskName, goalTime, ZERO_TIME, updatedStartTime, description);
             var _a = goalTime.split(':'), hoursGoal = _a[0], minutesGoal = _a[1];
+            if (hoursGoal <= newHours && minutesGoal <= newMinutes) {
+                currentListItem.setAttribute('id', 'finished');
+            }
             if (hoursGoal === newHours &&
                 minutesGoal === newMinutes &&
                 newSeconds === '00' &&
                 newCentiseconds === '00') {
-                if (hoursGoal <= newHours && minutesGoal <= newMinutes) {
-                    currentListItem.setAttribute('id', 'finished');
-                }
                 audio.play();
                 var checkIconDiv = currentListItem.children[0];
                 checkIconDiv.style.display = 'block';
